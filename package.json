@@ -1,0 +1,29 @@
+{
+  "name": "kondensat-rezervuar",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "description": "Yengil kondensat ombori: DCS/SIS integratsiyalashgan AI erta ogohlantirish va hodisa tahlili simulyatori",
+  "scripts": {
+    "test": "node --test tests/model.test.js tests/input.test.js tests/i18n.test.js",
+    "e2e": "node tests/e2e/smoke.js",
+    "desktop": "electron .",
+    "dist:win": "electron-builder --win --publish never"
+  },
+  "main": "electron/main.js",
+  "devDependencies": {
+    "electron": "33.3.1",
+    "electron-builder": "25.1.8"
+  },
+  "author": "Kondensat rezervuar",
+  "build": {
+    "appId": "uz.kondensat.rezervuar",
+    "productName": "Kondensat rezervuar AI",
+    "copyright": "Kondensat rezervuar AI",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["electron/**", "index.html", "css/**", "js/**", "build/icon.png", "package.json"],
+    "asar": true,
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png" },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "Kondensat rezervuar AI", "artifactName": "Kondensat-rezervuar-AI-Setup-${version}.exe" }
+  }
+}

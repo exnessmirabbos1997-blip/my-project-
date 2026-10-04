@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: http: https: ws: wss:; frame-src about: blob: data:; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Yengil kondensat ombori uchun DCS/SIS integratsiyalashgan AI erta ogohlantirish, hodisa tahlili va sabab tashxisi simulyatori.">
+<meta name="theme-color" content="#0a1018">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232457d6'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3EK%3C/text%3E%3C/svg%3E">
+<title>Yengil kondensat ombori — AI asosida erta ogohlantirish va hodisa tahlili</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Asosiy mazmunga o‘tish</a>
+<div class="app">
+<nav class="side" aria-label="Bo‘limlar">
+<div class="brand"><i>K</i><div><b>Kondensat AI</b><small>Erta ogohlantirish</small></div></div>
+<div class="navg">Gaz kondensati ombori</div>
+<button class="nav" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Umumiy ko‘rinish</button>
+<button class="nav" data-view="mimic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="7" height="12" rx="2"/><rect x="14" y="5" width="7" height="12" rx="2"/><path d="M10 11h4M6 17v3h12v-3"/></svg>Mnemosxema</button><button class="nav" data-view="3d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>3D ko‘rinish</button>
+<button class="nav" data-view="sis"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>SIS blokirovka</button>
+<button class="nav" data-view="trends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 3 5-6"/></svg>Trendlar</button>
+<button class="nav" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3L12 3z"/><path d="M12 10v4M12 17v.5"/></svg>AI xabarlari va indeks</button>
+<button class="nav" data-view="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M8 3h8l4 4v14H4V3z"/></svg>Hodisa tahlili (Review)</button>
+<button class="nav" data-view="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Hodisalar jurnali<span class="bdg"></span></button>
+<button class="nav" data-view="batch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M7 16V9M12 16V5M17 16v-4"/></svg>Ommaviy sinov</button>
+<button class="nav" data-view="data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>O‘z ma’lumotingiz</button>
+<button class="nav" data-view="math"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14M5 5l7 7-7 7h14"/></svg>Matematik model</button>
+<button class="nav" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Sozlamalar</button>
+<div class="foot">Simulyatsiya · 12 soat · 30 s</div>
+</nav>
+<main class="mainwrap" id="main">
+<div class="topbar"><span class="crumb">Gaz kondensati › <b id="crumb">Umumiy ko‘rinish</b></span>
+<span class="live"><i></i><span>Simulyatsiya · Real-time<small id="clock">—</small></span></span>
+<select class="tbtn" id="tags" aria-label="Teglar: anonim yoki haqiqiy" title="Teglar: anonim / haqiqiy (korxona)"><option value="anon">Anonim</option><option value="plant">Haqiqiy</option></select><select class="tbtn" id="lang" aria-label="Til / Язык / Language"><option value="uz">UZ</option><option value="ru">RU</option><option value="en">EN</option></select><button class="tbtn" id="theme" aria-label="Kun / tun rejimi">☾ / ☀</button><button class="tbtn pri" id="refresh">↻ Yangilash</button></div>
+<div class="mnav" id="mnav"><button class="mn" data-view="overview">Umumiy ko‘rinish</button><button class="mn" data-view="mimic">Mnemosxema</button><button class="mn" data-view="3d">3D ko‘rinish</button><button class="mn" data-view="sis">SIS blokirovka</button><button class="mn" data-view="trends">Trendlar</button><button class="mn" data-view="ai">AI xabarlari va indeks</button><button class="mn" data-view="review">Hodisa tahlili (Review)</button><button class="mn" data-view="journal">Hodisalar jurnali<span class="bdg"></span></button><button class="mn" data-view="batch">Ommaviy sinov</button><button class="mn" data-view="data">O‘z ma’lumotingiz</button><button class="mn" data-view="math">Matematik model</button><button class="mn" data-view="settings">Sozlamalar</button></div>
+<button type="button" class="tbtn" id="ctrlT" aria-expanded="false" aria-controls="ctrl">⚙ Parametrlar</button>
+<div class="ctrl" id="ctrl">
+<div class="f"><label for="kind">Holat turi</label><select id="kind"></select></div>
+<div class="f" style="min-width:130px"><label for="ftank">Nosozlik rezervuari</label><select id="ftank"><option value="0">A rezervuar</option><option value="1">B rezervuar</option></select></div>
+<div class="f" style="min-width:90px;width:90px"><label for="seed">Variant</label><input id="seed" type="number" value="3" min="1" step="1"></div>
+<button id="run">▶ Ishga tushirish</button><button id="show" class="sec">To‘liq ko‘rsatish</button>
+<div class="f" style="min-width:120px"><label for="speed">Tezlik</label><input id="speed" type="range" min="1" max="12" step="1" value="5"></div>
+<p class="grow" id="status">Model o‘qitilmoqda…</p>
+</div>
+
+<section class="view" id="v-overview">
+<div class="vh"><div><h1>Umumiy ko‘rinish</h1><p>Himoya hodisasigacha berilgan ogohlantirishlar, ombor mnemosxemasi, AI xabarlari va xavf indeksi tarkibi.</p></div></div>
+<div class="stats" aria-live="polite">
+<div class="stat g"><b id="sIdx">—</b><span>AI indeksi ogohlantirishi (hodisadan oldin)</span></div>
+<div class="stat a"><b id="sAl">—</b><span>Mavjud DCS alarmlari (hodisadan oldin)</span></div>
+<div class="stat d"><b id="sDg">—</b><span>AI diagnostika xabari (hodisadan oldin)</span></div>
+<div class="stat c"><b id="sCb">—</b><span>Birgalikda: eng erta ogohlantirish</span></div>
+</div>
+<div class="ovgrid"><div class="card" style="padding:10px"><div data-place="mimic"></div></div><div class="card"><div data-place="kv"></div><div style="height:14px"></div><div data-place="bars"></div></div></div>
+</section>
+
+<section class="view" id="v-mimic">
+<div class="vh"><div><h1>Mnemosxema</h1><p>Korxona DCS ekrani geometriyasi asosida. Rezervuardagi suyuqlik sathi DCS o‘lchagichi ko‘rsatkichi bo‘yicha to‘lib-kamayadi; yashil — ochiq klapan yoki ishlayotgan nasos, uch yo‘lli klapanda yashil tomon — minimal oqim yo‘nalishi.</p></div>
+</div>
+<div class="card" style="padding:10px"><div data-place="mimic"></div><div id="mimic" role="region" tabindex="0" aria-label="Ombor mnemosxemasi"></div>
+<p class="note">Gaz yostig‘i (PCV), PVSV 54 / −1,6 kPag va minimal oqim shaybasi (FO) DCS ekranida ko‘rsatilmaydi, lekin modelda hisobga olingan.</p><p class="swipe">Mnemosxemani to‘liq ko‘rish uchun yonga suring.</p></div>
+</section>
+
+<section class="view" id="v-3d">
+<div class="vh"><div><h1>3D ko‘rinish</h1><p>Ombor jarayonining uch o‘lchamli ko‘rinishi — mnemosxema bilan bir xil ma’lumotlardan olinadi (sath, bosim, nasoslar, klapanlar, SIS va AI xavf indeksi). Sichqoncha bilan aylantiring, g‘ildirak bilan yaqinlashtiring, uskunani bosib ma’lumot ko‘ring. Pastdagi o‘ynatish tugmasi bilan jarayonni yurgizing.</p></div></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="k3dWrap"><canvas id="k3dCv"></canvas>
+<div id="k3dBar"><button id="k3dMenu" type="button" aria-expanded="false" aria-controls="k3dBar">☰ Boshqaruv</button><button data-cam="bosh">Umumiy</button><button data-cam="oqim">Kirish</button><button data-cam="tankA">T-1A</button><button data-cam="tankB">T-1B</button><button data-cam="nasos">Nasoslar</button><button data-cam="vagon">Vagon</button><button data-cam="boshq">DCS xonasi</button><button data-cam="sis">SIS PLC</button><button data-cam="tepa">Yuqoridan</button><button id="k3dAuto">Aylanish</button><select id="k3dQ" title="Sifat" aria-label="3D sifati"><option value="2">Yuqori</option><option value="1">O‘rta</option><option value="0">Past</option></select><span id="k3dFps"></span></div>
+<div id="k3dLeg"><i style="background:#2dd4bf"></i>DCS signal <i style="background:#ef5350"></i>SIS (qattiq sim) <i style="background:#4aa8ff"></i>Tarmoq <i style="background:#f5b041"></i>Nasos</div><div id="k3dCmp"></div><div id="k3dRep"></div><div id="k3dToast"></div><div id="k3dQuiz"></div><div id="k3dTip"></div><div id="k3dFall">Bu qurilmada 3D (WebGL) ishlamadi. Mnemosxema bo‘limidan foydalaning.</div></div>
+<div id="k3dInfo"></div></div>
+</section>
+
+<section class="view" id="v-sis">
+<div class="vh"><div><h1>SIS blokirovka</h1><p>P&amp;ID izohlari (11, 12) bo‘yicha sabab–oqibat matritsasi. Holat tanlangan vaqt lahzasi uchun hisoblanadi: vaqt chizig‘ini surilganda yangilanadi.</p></div></div>
+<div class="card"><div id="sisBox"><p class="note">Hisoblanmoqda…</p></div></div>
+</section>
+
+<section class="view" id="v-trends">
+<div class="vh"><div><h1>Trendlar</h1><p>Sath (DCS va SIS), bosim va dinamik xavf indeksi. Grafik ustida barmoq yoki sichqoncha bilan istalgan nuqtadagi qiymatni ko‘ring.</p></div>
+<label style="margin:0;display:flex;gap:6px;align-items:center">Rezervuar <select id="ctank" style="width:auto;padding:5px 8px"><option value="0">A</option><option value="1">B</option></select></label></div>
+<div class="card">
+<p class="cap" id="capL" style="margin-top:0">Sath, %</p>
+<div class="legend"><span><i style="background:var(--ink)"></i>DCS</span><span><i style="background:var(--idx)"></i>SIS (2 ta o‘lchagich)</span><span><i style="background:var(--gray)"></i>DCS alarm</span><span><i style="background:var(--trip)"></i>SIS chegarasi</span></div>
+<canvas id="c1" role="img" aria-labelledby="capL" height="220"></canvas>
+<p class="cap" id="capP">Bosim, kPag</p>
+<canvas id="c3" role="img" aria-labelledby="capP" height="150"></canvas>
+<p class="cap" id="capR">Dinamik xavf indeksi R(t)</p>
+<div class="legend"><span><i style="background:var(--warn)"></i>R — tanlangan rezervuar</span><span><i style="background:var(--mut)"></i>R — ikkinchi rezervuar</span><span><i style="background:var(--diag)"></i>diagnostika</span><span><i style="background:var(--trip)"></i>himoya hodisasi (undan keyin indeks ko‘rsatilmaydi)</span></div>
+<canvas id="c2" role="img" aria-labelledby="capR" height="180"></canvas>
+<div class="btns"><button id="xExp" class="sec">Excel’ga yuklab olish (.xlsx)</button></div>
+</div>
+</section>
+
+<section class="view" id="v-ai">
+<div class="vh"><div><h1>AI xabarlari va xavf indeksi</h1><p>Operatorga beriladigan xabarlar, tanlangan rezervuar holati va indeks tashkil etuvchilari.</p></div></div>
+<div class="sgrid"><div class="card"><div data-place="kv"></div></div><div class="card"><div data-place="bars"></div></div></div>
+<div id="kvwrap"><div class="kv" id="kv"></div><h2 style="margin:12px 0 0;font-size:14px">AI xabarlari</h2><ul class="msgs" id="msgs"></ul></div>
+<div id="barswrap"><h2 style="margin:0;font-size:14px" id="whyT">Indeks tarkibi</h2><div class="bars" id="bars"></div><p class="note" id="why"></p></div>
+</section>
+
+<section class="view" id="v-review">
+<div class="vh"><div><h1>Hodisa tahlili (Review)</h1><p>Tanlangan holat bo‘yicha avtomatik tuzilgan tahlil: sabab, voqealar ketma-ketligi, parametrlar o‘zgarishi, texnolog va KIP xulosasi.</p></div></div>
+<div class="card" id="rv"><div id="review"><p class="note">Hisoblanmoqda…</p></div></div>
+</section>
+
+<section class="view" id="v-journal">
+<div class="vh"><div><h1>Hodisalar jurnali</h1><p>Tanlangan holat bo‘yicha DCS, SIS va AI voqealari vaqt tartibida. Operator har bir voqeani tasdiqlaydi (ACK).</p></div></div>
+<div class="card"><div class="btns" style="margin-top:0"><button id="jAck">Hammasini tasdiqlash</button><button id="jCsv" class="sec">CSV’ga eksport</button><button id="jClr" class="sec">Tasdiqlarni tozalash</button></div>
+<p class="note" id="jInfo"></p><div class="tw" tabindex="0"><table id="jTab"></table></div></div>
+</section>
+
+<section class="view" id="v-batch">
+<div class="vh"><div><h1>Ommaviy sinov</h1><p>Har bir nosozlik turidan 10 tadan (A va B navbat bilan) va 50 ta normal ish ssenariysi; joriy sozlamalar bilan.</p></div></div>
+<div class="card">
+<div class="btns" style="margin-top:0"><button id="bRun">Barcha ssenariylar bo‘yicha sinash</button><button id="b5" class="sec">5 ta variant bo‘yicha o‘rtacha</button></div>
+<div class="prog hide" id="prog"><div></div></div>
+<div id="bOut" aria-live="polite"></div>
+</div>
+</section>
+
+<section class="view" id="v-data">
+<div class="vh"><div><h1>O‘z ma’lumotingiz</h1><p>PHD trendini Excel (.xlsx) yoki CSV fayldan yuklang — tahlil A rezervuar ma’lumoti sifatida bajariladi. Fayl brauzerdan tashqariga chiqmaydi.</p></div></div>
+<div class="card">
+<p class="note" style="margin-top:0">Ustunlar (birinchi qatorda sarlavha): <b>sath</b> (DCS, majburiy), <b>sis1</b>, <b>sis2</b>, <b>bosim</b>, <b>nasos</b> (0/1/2), <b>kirish</b> (m³/sutka). Chegara va hajm “Sozlamalar”dan olinadi.</p>
+<div class="pgrid" style="max-width:520px">
+<div><label for="pDT">Diskretlik, soniya</label><input id="pDT" type="number" value="30" min="1"></div>
+<div><label for="pTR">Normal deb olinadigan boshlang‘ich qism, %</label><input id="pTR" type="number" value="30" min="10" max="90"></div>
+</div>
+<label for="csv">Fayl (.xlsx, .csv)</label>
+<input id="csv" type="file" accept=".xlsx,.csv,.txt,text/csv" style="max-width:520px">
+<div class="btns"><button id="sample" class="sec">Namuna Excel yuklab olish</button><button id="back" class="sec">Simulyatsiyaga qaytish</button></div>
+<p class="msg" id="csvMsg"></p>
+</div>
+<div class="card" style="margin-top:14px" id="liveCard">
+<h2 style="margin:0 0 6px;font-size:15px">Onlayn ma’lumot qabul qilish (real vaqt)</h2>
+<p class="note" style="margin-top:0">Tashqi manbadan ma’lumot avtomatik va uzluksiz olinadi: yangi qatorlar kelishi bilan mnemosxema, trendlar, AI indeksi va xabarlar yangilanadi. Ustunlar yuqoridagidek: <b>sath</b>, <b>sis1</b>, <b>sis2</b>, <b>bosim</b>, <b>nasos</b>, <b>kirish</b>.</p>
+<div class="pgrid" style="max-width:720px;grid-template-columns:1fr 1fr 1fr">
+<div><label for="lvSrc">Manba turi</label><select id="lvSrc"><option value="file">Excel / CSV fayl (kuzatish)</option><option value="url">URL manzil (CSV / Excel / JSON)</option><option value="ws">WebSocket (OPC / Node-RED shlyuzi)</option></select></div>
+<div><label for="lvInt">Yangilash davri, soniya</label><input id="lvInt" type="number" value="5" min="1"></div>
+<div><label for="lvMax">Oynadagi qatorlar (oxirgi)</label><input id="lvMax" type="number" value="2880" min="100"></div>
+</div>
+<div id="lvUrlBox" hidden><label for="lvUrl">Manzil</label><input id="lvUrl" type="text" placeholder="https://… .csv  yoki  ws://192.168.1.10:1880/ws/tank" style="width:100%;max-width:720px;padding:7px 8px;border:1px solid var(--line);border-radius:4px;background:var(--pan);color:var(--ink);font:inherit"></div>
+<div class="btns"><button id="lvStart">▶ Onlayn qabulni boshlash</button><button id="lvStop" class="sec" disabled>■ To‘xtatish</button><button id="lvDemo" class="sec">Sinov manbasi (namuna oqim)</button></div>
+<p class="msg" id="lvMsg"><span id="lvDot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--gray);margin-right:6px"></span><span id="lvTxt">Onlayn qabul o‘chiq.</span></p>
+<p class="note">Fayl rejimi: Excel/SCADA eksport qiladigan .xlsx yoki .csv faylni tanlang — fayl har saqlanganda yangi qatorlar avtomatik o‘qiladi (Chrome / Edge). URL rejimi: Google Sheets “Internetda nashr qilish → CSV” havolasi yoki shlyuzning HTTP manzili (CORS ruxsati bo‘lishi kerak). WebSocket rejimi: har bir xabar JSON qator (<code>{"sath":55.2,"sis1":55.0,"sis2":55.4,"bosim":52,"nasos":1,"kirish":150}</code>) yoki CSV qator bo‘lishi kerak.</p>
+</div>
+</section>
+
+<section class="view" id="v-math">
+<div class="vh"><div><h1>Matematik model</h1><p>Simulyator va MATLAB moduli bir xil tenglamalarga asoslangan. Vaqt — daqiqa, oqim — m³/soat, sath — %. Quyidagi ifodalar maqoladagi (1)–(6) formulalarga mos.</p></div></div>
+<div class="sgrid" style="grid-template-columns:repeat(auto-fit,minmax(min(520px,100%),1fr))">
+<div class="card"><h2>1. Rezervuar dinamikasi (massa balansi)</h2>
+<div class="eq">dLᵢ/dt = 100·( Q<sub>kir</sub>·sᵢ·(1−HHᵢ) − n·u·Q<sub>n</sub>·cᵢ − Q<sub>m</sub>·cᵢ + Q<sub>m</sub>·mᵢ − Q<sub>siz</sub> ) / (60·V),   0 ≤ Lᵢ ≤ 100</div>
+<p class="note">Q<sub>kir</sub> — ishlab chiqarish oqimi; sᵢ, cᵢ — kirish va chiqish klapanlari ulushi; n — ishlayotgan nasoslar; u — unumdorlik nisbati; Q<sub>n</sub> — nasos unumi; Q<sub>m</sub> — minimal oqim; mᵢ — uch yo‘lli klapan minimal oqimni i-rezervuarga yo‘naltirsa 1; HHᵢ — SIS LAHH relesi.</p>
+<h2 style="margin-top:14px">2. SIS blokirovkasi (P&amp;ID)</h2>
+<div class="eq">LL = OR(Sₐ ≤ L<sub>LL</sub>, S<sub>b</sub> ≤ L<sub>LL</sub>)  → nasoslar to‘xtaydi
+HH = OR(Sₐ ≥ L<sub>HH</sub>, S<sub>b</sub> ≥ L<sub>HH</sub>)  → kirish klapani yopiladi
+(signal yo‘qolsa — fail-safe: kanal «trip» ovozini beradi)</div>
+<h2 style="margin-top:14px">3. O‘lchov modeli</h2>
+<div class="eq">L<sub>DCS</sub> = L + b<sub>D</sub> + ε,  Sₐ = L + bₐ + ε,  S<sub>b</sub> = L + b<sub>b</sub> + ε,  ε ~ N(0, (k·σ)²)</div>
+</div>
+<div class="card"><h2>4. AI belgilari</h2>
+<div class="eq">z = (v − v<sub>kut</sub>) / σ,   σ = √( (0,03·k)² + (0,15·n·q<sub>n</sub>)² )
+z₆₀ — nasos ishlamagan 60 daqiqalik oynadagi o‘rtacha qoldiq
+x₃ = max( IF-bal, |z|, |z_bosim|, |z₆₀| )   (bal — [0;1] ga keltirilgan)</div>
+<p class="note">Isolation Forest: 100 daraxt, 256 tanlanma, 40 ta normal ssenariyda o‘qitiladi; s(x) = 2<sup>−E[h(x)]/c(n)</sup>, bal o‘qitish ballari medianasi → 0, maksimumi → 1 bo‘yicha me’yorlanadi. Isolation Forest faqat x₃ ga kiradi; sabab tashxisi fizik qoidalar asosida bajariladi. Sizish va aylanma oqim tashxisi chegarasi z<sub>T</sub> normal ssenariylardagi |z₆₀| maksimumidan o‘rganiladi: z<sub>T</sub> = max(2,0; 3·max|z₆₀|), lekin 6,8 dan oshmaydi.</p>
+<h2 style="margin-top:14px">5. Dinamik xavf indeksi</h2>
+<div class="eq"><b>x₁</b> = sat( (2·L<sub>A</sub> − L<sub>T</sub> − L) / (2·(L<sub>A</sub> − L<sub>T</sub>)) , 0, 1 )
+<b>τ</b>  = (L − L<sub>T</sub>) / (−v),          <b>x₂</b> = sat( 1 − τ / T<sub>u</sub>, 0, 1 ),   T<sub>u</sub> = 60 min
+<b>x₄</b> = sat( (Δ − 1,5) / 4,5, 0, 1 ),    Δ = max(|L<sub>DCS</sub> − S̄|, |Sₐ − S<sub>b</sub>|)
+<b>R</b>  = max<sub>j</sub>( w₁·x₁ⱼ + w₂·x₂ⱼ ) + w₃·x₃ + w₄·x₄,    R ≥ R* (ketma-ket 3 o‘lchov) ⇒ ogohlantirish</div>
+<p class="note">Vaznlar: w₁ = 0,20; w₂ = 0,50; w₃ = 0,15; w₄ = 0,15. R* = 0,45.</p>
+<h2 style="margin-top:14px">6. Baholash ko‘rsatkichlari</h2>
+<div class="eq">lead time = t<sub>hodisa</sub> − t<sub>ogohlantirish</sub> (ogohlantirish nosozlikdan 10 min oldingi paytdan hisobga olinadi),   yetarli ulush = P( lead ≥ T<sub>javob</sub> ),   T<sub>javob</sub> = 10 min
+tashxis aniqligi = to‘g‘ri sabab va rezervuar / jami ssenariy</div>
+</div>
+<div class="card" style="grid-column:1/-1"><h2>MATLAB moduli</h2>
+<p class="note" style="margin-top:0">Shu tenglamalarning mustaqil dasturiy amalga oshirilishi <b>Matematik_modul_MATLAB</b> papkasida (paketda): <code>ishga_tushirish.m</code> — to‘liq hisob, <code>bitta_ssenariy.m</code> — bitta holat va grafik, <code>ommaviy_sinov.m</code> — 5- va 6-jadvallar, <code>sezgirlik_tahlili.m</code> — chegara tanlash, <code>simulink_model_yaratish.m</code> — Simulink modeli. MATLAB modulida shu simulyatordagi tasodifiy sonlar generatori (Mulberry32, js_rand.m) ishlatiladi, shuning uchun bir xil urug‘larda ssenariylar va natijalar bir xil chiqadi.</p></div>
+</div></section>
+
+<section class="view" id="v-settings">
+<div class="vh"><div><h1>Sozlamalar</h1><p>Ssenariy, indeks vaznlari va jarayon parametrlari. Jarayon parametrlari o‘zgartirilgach “Qo‘llash” bosiladi — model qayta o‘qitiladi.</p></div></div>
+<div class="sgrid">
+<div class="card"><h2>Ssenariy</h2>
+<div class="row"><label for="sev" style="margin-bottom:0">Nosozlik jiddiyligi</label><span class="val" id="sevv"></span></div>
+<input id="sev" type="range" min="0" max="1" step="0.05" value="0">
+<div class="row"><label for="noise" style="margin-bottom:0">O‘lchash shovqini</label><span class="val" id="noisev"></span></div>
+<input id="noise" type="range" min="0.5" max="3" step="0.25" value="1">
+</div>
+<div class="card"><h2>Dinamik xavf indeksi</h2>
+<div class="row"><label for="rth" style="margin:0">Ogohlantirish chegarasi</label><span class="val" id="rthv"></span></div>
+<input id="rth" type="range" min="0.2" max="0.9" step="0.01" value="0.45">
+<div class="row"><label for="w1" style="margin:8px 0 0">w₁ chegaraga yaqinlik</label><span class="val" id="w1v"></span></div><input id="w1" type="range" min="0" max="1" step="0.05" value="0.20">
+<div class="row"><label for="w2" style="margin:0">w₂ hodisagacha vaqt</label><span class="val" id="w2v"></span></div><input id="w2" type="range" min="0" max="1" step="0.05" value="0.50">
+<div class="row"><label for="w3" style="margin:0">w₃ anomaliya</label><span class="val" id="w3v"></span></div><input id="w3" type="range" min="0" max="1" step="0.05" value="0.15">
+<div class="row"><label for="w4" style="margin:0">w₄ DCS–SIS tafovuti</label><span class="val" id="w4v"></span></div><input id="w4" type="range" min="0" max="1" step="0.05" value="0.15">
+<p class="note">Vaznlar yig‘indisi avtomatik 1 ga keltiriladi.</p>
+</div>
+<div class="card" style="grid-column:1/-1"><h2>Jarayon parametrlari</h2><div class="pgrid">
+<div><label for="pV">Rezervuar hajmi, m³</label><input id="pV" type="number" value="500" min="10"></div>
+<div><label for="pQprod">Ishlab chiqarish, m³/sutka</label><input id="pQprod" type="number" value="174" min="0"></div>
+<div><label for="pQpump">Nasos unumi, m³/soat</label><input id="pQpump" type="number" value="80" min="1"></div>
+<div><label for="pQr">Minimal oqim (aylanma), m³/soat</label><input id="pQr" type="number" value="20" min="0"></div>
+<div><label for="pP0">Normal bosim, kPag</label><input id="pP0" type="number" value="51.9" step="0.1"></div>
+<div><label for="pTh">Indeks ufqi, min</label><input id="pTh" type="number" value="60" min="5"></div>
+<div><label for="pLAL">DCS Low alarm, %</label><input id="pLAL" type="number" value="20"></div>
+<div><label for="pLALL">SIS LALL, %</label><input id="pLALL" type="number" value="10"></div>
+<div><label for="pLAH">DCS High alarm, %</label><input id="pLAH" type="number" value="85"></div>
+<div><label for="pLAHH">SIS LAHH, %</label><input id="pLAHH" type="number" value="90"></div>
+<div><label for="pPAL">DCS bosim L alarm, kPag</label><input id="pPAL" type="number" value="30" step="0.1"></div>
+<div><label for="pPALL">DCS bosim LL alarm, kPag</label><input id="pPALL" type="number" value="15" step="0.1"></div>
+<div><label for="pTresp">Operator javob vaqti, min</label><input id="pTresp" type="number" value="10" min="1"></div>
+</div>
+<label for="pVote">SIS ovoz berish mantiqi (2 ta sath o‘lchagich)</label>
+<select id="pVote"><option value="1oo2">1oo2 (OR) — P&amp;ID bo‘yicha</option><option value="2oo2">2oo2 — ikkalasi kerak</option></select>
+<p class="note">P&amp;ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,6 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.</p>
+<div class="btns"><button id="apply">Qo‘llash</button><button id="reset" class="sec">Standart qiymatlar</button></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h2 class="sh">Haqiqiy teglar (ixtiyoriy)</h2>
+<p class="note" style="margin-top:0">Korxona teglari dasturda saqlanmaydi. Ularni JSON fayl sifatida yuklasangiz, yuqoridagi “Haqiqiy” tanlovi ishlaydi; fayl faqat shu brauzerda (qurilmada) turadi va hech qayerga yuborilmaydi.</p>
+<div class="btns"><button id="tagsImp" type="button">Teglar faylini yuklash (JSON)</button><button id="tagsDel" type="button" class="sec">Haqiqiy teglarni o‘chirish</button></div>
+<p class="note" id="tagsMsg" role="status"></p><input id="tagsFile" type="file" accept=".json,application/json" hidden></div>
+</section>
+</div></main></div>
+<script src="js/sim.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/app.js"></script>
+<script src="js/scene3d.bundle.js"></script>
+<script src="js/scene3d-view.js"></script>
+<script src="js/pdf-quiz.js"></script>
+<script src="js/journal.js"></script>
+<script src="js/sis.js"></script>
+<script src="js/mn3d.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/i18n.js"></script>
+</body>
+</html>

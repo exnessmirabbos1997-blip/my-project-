@@ -1,0 +1,6 @@
+vaqt_min;manba;hodisa;rezervuar;qiymat
+0,000;info;start;T-1B;1,000
+74,500;op;pstart;T-1A;1,000
+88,500;truth;recirc;T-1B;20,000
+180,500;op;pstop;T-1A;35,610
+257,000;sis;trip;T-1B;2,000

@@ -1,0 +1,4 @@
+Bu papkadagi natijalar GNU Octave 8.4 da ishga_tushirish/ommaviy_sinov orqali hisoblangan (MATLAB muhitida sinab ko'rilmagan).
+Model v2 (zT o'rganilgan chegara, takrorsiz IF tanlamasi, o'qitishda ikki nasosli rejim) bilan qayta hisoblangan.
+600 ta ssenariyning barchasi veb-simulyator (js/sim.js, tests/ bilan 25/25) natijalari bilan bir xil: hodisa vaqti, lead (alarm/indeks/diagnostika/birgalikda), tashxis kodi va rezervuar.
+Jadval .xlsx fayllari va rasm4_holatlar.png yangi modelda qayta chizilmagan (Octave'da grafik/xlsx yo'q): ommaviy_sinov ni MATLAB'da ishga tushirsangiz qayta hosil bo'ladi.
