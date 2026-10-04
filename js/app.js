@@ -17,6 +17,7 @@ const SIFL=['LALL (sath past-past, SIS)','LAHH (sath yuqori-yuqori, SIS)','PVSV 
 const SIFK=['LALL','LAHH','PVSV vakuum'];
 const PDEF=plantDefaults();
 let P={...PDEF},simModel=null,model=null,cur=null,prog=0,hover=-1,timer=null,mode='sim',lastBatch=null,working=false,geo=null,lastW=0;
+const tx=s=>window.tr?window.tr(s):s;   // i18n.js app.js dan keyin yuklanadi — yuklanish paytida tr yo'q
 // Holat turlari: nomlarini o'zgartirish va o'z nomli holatlar qo'shish (har biri asosiy modellardan biriga tayanadi)
 const KDEF={...KINDS},KBASE=Object.keys(KDEF),KIND_KEY='qkinds',KC_KEY='qkinds_custom';
 let KC=[];
@@ -32,15 +33,15 @@ function kindsRebuild(){const s=$('kind'),keep=s.value||'f4';s.textContent='';fo
   s.value=KINDS[keep]!==undefined?keep:'f4';
   const box=$('knBox');if(!box)return;box.textContent='';
   for(const k of KBASE){const l=document.createElement('label');l.textContent=KDEF[k];l.htmlFor='kn_'+k;const i=document.createElement('input');i.type='text';i.id='kn_'+k;i.maxLength=80;i.value=KINDS[k];i.className='kni';box.append(l,i)}
-  const cl=$('kcList');cl.textContent='';for(const x of KC){const li=document.createElement('li');li.textContent=x.name+' — '+KDEF[x.base]+' ';const b=document.createElement('button');b.type='button';b.className='sec';b.textContent=tr('O‘chirish');b.onclick=()=>{KC=KC.filter(y=>y.id!==x.id);lsSet(KC_KEY,KC);kindsLoad();kindsRebuild()};li.appendChild(b);cl.appendChild(li)}}
+  const cl=$('kcList');cl.textContent='';for(const x of KC){const li=document.createElement('li');li.textContent=x.name+' — '+KDEF[x.base]+' ';const b=document.createElement('button');b.type='button';b.className='sec';b.textContent=tx('O‘chirish');b.onclick=()=>{KC=KC.filter(y=>y.id!==x.id);lsSet(KC_KEY,KC);kindsLoad();kindsRebuild()};li.appendChild(b);cl.appendChild(li)}}
 kindsLoad();kindsRebuild();$('kind').value='f4';$('ftank').value='1';
 {const sel=$('kcBase');for(const k of KBASE){const o=document.createElement('option');o.value=k;o.textContent=KDEF[k];sel.appendChild(o)}}
 $('knSave').onclick=()=>{const n={};for(const k of KBASE){const v=cleanName($('kn_'+k).value);if(v&&v!==KDEF[k])n[k]=v}
-  if(!lsSet(KIND_KEY,n)){$('knMsg').textContent=tr('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('knMsg').textContent=tr('Saqlandi.');if(cur)render()};
-$('knReset').onclick=()=>{try{localStorage.removeItem(KIND_KEY)}catch(e){}kindsLoad();kindsRebuild();$('knMsg').textContent=tr('Asl nomlar tiklandi.');if(cur)render()};
-$('kcAdd').onclick=()=>{const nm=cleanName($('kcName').value);if(!nm){$('knMsg').textContent=tr('Holat nomini yozing.');return}if(KC.length>=20){$('knMsg').textContent=tr('Ko‘pi bilan 20 ta o‘z holati.');return}
+  if(!lsSet(KIND_KEY,n)){$('knMsg').textContent=tx('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('knMsg').textContent=tx('Saqlandi.');if(cur)render()};
+$('knReset').onclick=()=>{try{localStorage.removeItem(KIND_KEY)}catch(e){}kindsLoad();kindsRebuild();$('knMsg').textContent=tx('Asl nomlar tiklandi.');if(cur)render()};
+$('kcAdd').onclick=()=>{const nm=cleanName($('kcName').value);if(!nm){$('knMsg').textContent=tx('Holat nomini yozing.');return}if(KC.length>=20){$('knMsg').textContent=tx('Ko‘pi bilan 20 ta o‘z holati.');return}
   let id=1;while(KC.some(x=>x.id==='c'+id))id++;KC.push({id:'c'+id,name:nm,base:$('kcBase').value});
-  if(!lsSet(KC_KEY,KC)){KC.pop();$('knMsg').textContent=tr('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('kind').value='c'+id;$('kcName').value='';$('knMsg').textContent=tr('Qo‘shildi va tanlandi.')};
+  if(!lsSet(KC_KEY,KC)){KC.pop();$('knMsg').textContent=tx('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('kind').value='c'+id;$('kcName').value='';$('knMsg').textContent=tx('Qo‘shildi va tanlandi.')};
 $('kindEdit').onclick=()=>{showView('settings');const e=$('knCard');if(e)e.scrollIntoView({block:'start'})};
 function readP(){const raw=[1,2,3,4].map(i=>+$('w'+i).value);const s=raw.reduce((a,b)=>a+b,0)||1;P.w=raw.map(x=>x/s);raw.forEach((x,i)=>$('w'+(i+1)+'v').textContent=fmt(P.w[i],2));
   P.RTH=+$('rth').value;$('rthv').textContent=fmt(P.RTH,2);P.sev=+$('sev').value;$('sevv').textContent=P.sev>0?fmt(P.sev,2):'tasodifiy';P.noise=+$('noise').value;$('noisev').textContent='×'+fmt(P.noise,2)}
@@ -828,17 +829,17 @@ function askPw(msg){const d=$('pwDlg'),inp=$('pwIn');return new Promise(res=>{le
   $('pwForm').onsubmit=e=>{e.preventDefault();fin(inp.value)};$('pwCancel').onclick=()=>fin(null);d.onclose=()=>fin(null);d.showModal();inp.focus()})}
 let pwFails=0,pwLock=0;
 async function unlockPlant(){
-  if(!Vault.available()){$('status').textContent=tr('Xato: bu brauzerda shifrlash mavjud emas (https yoki zamonaviy brauzer kerak).');return false}
-  const box=vaultBox();if(!box){$('status').textContent=tr('Bu nusxada haqiqiy teglar yo‘q.');return false}
+  if(!Vault.available()){$('status').textContent=tx('Xato: bu brauzerda shifrlash mavjud emas (https yoki zamonaviy brauzer kerak).');return false}
+  const box=vaultBox();if(!box){$('status').textContent=tx('Bu nusxada haqiqiy teglar yo‘q.');return false}
   let msg='';
   for(;;){
-    const wait=pwLock-Date.now();if(wait>0)msg=tr('Juda ko‘p urinish. Kuting')+': '+Math.ceil(wait/1000)+' s';
+    const wait=pwLock-Date.now();if(wait>0)msg=tx('Juda ko‘p urinish. Kuting')+': '+Math.ceil(wait/1000)+' s';
     const pw=await askPw(msg);if(pw===null)return false;
-    if(pwLock>Date.now()){msg=tr('Juda ko‘p urinish. Kuting')+': '+Math.ceil((pwLock-Date.now())/1000)+' s';continue}
+    if(pwLock>Date.now()){msg=tx('Juda ko‘p urinish. Kuting')+': '+Math.ceil((pwLock-Date.now())/1000)+' s';continue}
     const t=await Vault.open(box,pw),tags=t&&sanitizeTags(t,TAGS.anon);
     if(tags){pwFails=0;TAGS.plant=tags;return true}
     if(++pwFails>=5){pwLock=Date.now()+30000;pwFails=0}
-    msg=tr('Parol noto‘g‘ri.')}}
+    msg=tx('Parol noto‘g‘ri.')}}
 $('tags').onchange=async()=>{
   if($('tags').value==='plant'){$('tags').value='anon';if(await unlockPlant())$('tags').value='plant'}
   else delete TAGS.plant;   // anonimga qaytilganda qulflanadi: keyingi safar yana parol so'raladi
@@ -853,7 +854,7 @@ $('pwChg').onclick=async()=>{const m=$('pwChgMsg'),o=$('pwOld').value,n=$('pwNew
   const t=await Vault.open(box,o);if(!t)return say('Eski parol noto‘g‘ri.',1);
   try{localStorage.setItem('qtags_vault',JSON.stringify(await Vault.seal(t,n)))}catch(e){return say('Xato: brauzer xotirasi yopiq, parol saqlanmadi.',1)}
   $('pwOld').value=$('pwNew').value=$('pwNew2').value='';say('Parol yangilandi (faqat shu qurilmada).',0)};
-$('pwReset').onclick=()=>{if(!confirm(tr('Parol dastlabki (o‘rnatilgan) holatga qaytariladi. Davom etasizmi?')))return;try{localStorage.removeItem('qtags_vault')}catch(e){}$('pwChgMsg').textContent=tr('Dastlabki parol tiklandi.');$('pwChgMsg').style.color='var(--ok)'};
+$('pwReset').onclick=()=>{if(!confirm(tx('Parol dastlabki (o‘rnatilgan) holatga qaytariladi. Davom etasizmi?')))return;try{localStorage.removeItem('qtags_vault')}catch(e){}$('pwChgMsg').textContent=tx('Dastlabki parol tiklandi.');$('pwChgMsg').style.color='var(--ok)'};
 $('ctank').onchange=()=>{if(cur)render()};
 $('run').onclick=()=>{if(LV.on)lvStop();if(mode==='sim')runSimNow(true);else if(cur)play()};
 $('show').onclick=()=>{clearInterval(timer);timer=null;prog=cur?cur.run.tanks[0].Ld.length:0;hover=-1;render()};

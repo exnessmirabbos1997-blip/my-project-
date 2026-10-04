@@ -54,6 +54,11 @@ const VIEWS=['overview','mimic','3d','sis','trends','ai','review','journal','bat
   await p.evaluate(()=>{showView('overview');$('run').click()});await p.waitForTimeout(800);
   ok(await p.evaluate(()=>cur.run.kind==='f2'&&cur.run.label==='Test bholat/b'&&$('status').textContent.includes('Test bholat/b')),'o‘z holati asosiy model bo‘yicha ishlaydi');
   await p.evaluate(()=>{showView('settings');$('knReset').click();KC=[];lsSet(KC_KEY,[]);kindsLoad();kindsRebuild()});
+  // o'z holati saqlangan bo'lsa sahifa qayta ochilganda xatosiz yuklanadi
+  await p.evaluate(()=>{lsSet(KC_KEY,[{id:'c1',name:'Saqlangan',base:'f2'}])});
+  const e5=[];p.on('pageerror',e=>e5.push(e.message));await p.reload();await p.waitForFunction(()=>typeof cur!=='undefined'&&cur,null,{timeout:90000});
+  ok(e5.length===0&&await p.evaluate(()=>[...$('kind').options].some(o=>o.value==='c1')),'saqlangan o‘z holati bilan sahifa xatosiz ochiladi'+(e5.length?': '+e5[0]:''));
+  await p.evaluate(()=>{try{localStorage.removeItem('qkinds_custom')}catch(e){}});
   if(mob){await p.evaluate(()=>showView('sis'));await p.waitForTimeout(400);
    ok(await p.evaluate(()=>{const a=document.querySelector('#mnav .on').getBoundingClientRect();return a.left>=-1&&a.right<=innerWidth+1}),'mobil menyuda faol tab ko‘rinadi');
    ok(await p.evaluate(()=>getComputedStyle($('show')).display==='none'),'mobil boshqaruv panel yig‘ilgan');
@@ -67,4 +72,13 @@ const VIEWS=['overview','mimic','3d','sis','trends','ai','review','journal','bat
  ok(n<=1,'3D tark etilgach uning rAF sikli to‘xtaydi ('+n+' chaqiruv/2.5s)');
  await p.evaluate(()=>showView('3d'));await p.waitForTimeout(1500);await p.evaluate(()=>{window.__o=0});await p.waitForTimeout(1500);
  ok(await p.evaluate(()=>window.__o)>=1,'3D ga qaytilganda sikl qayta ishga tushadi');
+ // PDF hisobot: avval ko'rinadi (to'g'ridan-to'g'ri chop etilmaydi), keyin PDF faylga saqlanadi
+ {const c2=await b.newContext({viewport:{width:1400,height:900},acceptDownloads:true});const q=await c2.newPage();
+  await q.addInitScript(()=>{window.__pr=0;window.print=()=>{window.__pr++}});
+  await q.goto(url+'#3d');await q.waitForFunction(()=>typeof cur!=='undefined'&&cur,null,{timeout:90000});await q.waitForTimeout(2000);
+  await q.click('#k3dPdf');await q.waitForSelector('#rpDlg[open]',{timeout:20000});
+  ok(await q.evaluate(()=>window.__pr===0&&document.getElementById('rpFr').srcdoc.length>1000),'hisobot avval ko‘rsatiladi, o‘zi chop etilmaydi');
+  const [dl]=await Promise.all([q.waitForEvent('download',{timeout:60000}),q.click('#rpPdf')]);
+  const bytes=require('fs').readFileSync(await dl.path());ok(bytes.slice(0,5).toString()==='%PDF-'&&bytes.slice(-6).toString().includes('%%EOF')&&bytes.length>20000,'PDF fayl saqlanadi ('+bytes.length+' bayt)');
+  await c2.close()}
  await b.close();srv.close();console.log(fails.length?`\n${fails.length} ta xato`:'\nHammasi o‘tdi');process.exit(fails.length?1:0)})();

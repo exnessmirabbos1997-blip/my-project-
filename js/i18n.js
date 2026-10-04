@@ -2,6 +2,15 @@
 // formulalar va jarayon xabarlari (AI xabarlari, Review matni) o'zbek tilida qoladi. =====
 const I18N={
 ru:{
+'Hisobotni ko‘rish':'Просмотр отчёта',
+'🖨 Chop etish':'🖨 Печать',
+'💾 PDF sifatida saqlash':'💾 Сохранить как PDF',
+'Yopish':'Закрыть',
+'Hisobotni ko‘rib chiqing; keyin chop eting yoki PDF sifatida saqlang.':'Просмотрите отчёт; затем распечатайте или сохраните как PDF.',
+'PDF tayyorlanmoqda…':'Подготовка PDF…',
+'PDF saqlandi: hisobot.pdf':'PDF сохранён: hisobot.pdf',
+'Chop etib bo‘lmadi: ':'Не удалось распечатать: ',
+'PDF yaratib bo‘lmadi: ':'Не удалось создать PDF: ',
 'Holat turlari (tahrirlash)':'Типы ситуаций (редактирование)',
 'Holat nomlarini o‘zgartiring yoki o‘zingizning nomli holatingizni yozing: u tanlangan asosiy model bo‘yicha hisoblanadi.':'Измените названия ситуаций или впишите свою: она рассчитывается по выбранной базовой модели.',
 'Nomlarni saqlash':'Сохранить названия',
@@ -249,6 +258,15 @@ ru:{
 'P&ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,6 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.':'P&ID: LS HH (ИЛИ) — закрывается входной клапан; LS LL (ИЛИ) — останавливаются насосы; сброс — HS. От низкого давления защищает не SIS, а PVSV (54 / −1,6 кПа(изб.)). С экрана DCS: производство 174 м³/сутки, давление 51,9 кПа(изб.). Остальное ориентировочно.'
 },
 en:{
+'Hisobotni ko‘rish':'Report preview',
+'🖨 Chop etish':'🖨 Print',
+'💾 PDF sifatida saqlash':'💾 Save as PDF',
+'Yopish':'Close',
+'Hisobotni ko‘rib chiqing; keyin chop eting yoki PDF sifatida saqlang.':'Review the report; then print it or save it as PDF.',
+'PDF tayyorlanmoqda…':'Preparing PDF…',
+'PDF saqlandi: hisobot.pdf':'PDF saved: hisobot.pdf',
+'Chop etib bo‘lmadi: ':'Could not print: ',
+'PDF yaratib bo‘lmadi: ':'Could not create PDF: ',
 'Holat turlari (tahrirlash)':'Scenario types (edit)',
 'Holat nomlarini o‘zgartiring yoki o‘zingizning nomli holatingizni yozing: u tanlangan asosiy model bo‘yicha hisoblanadi.':'Rename the scenarios or write your own: it is computed with the selected base model.',
 'Nomlarni saqlash':'Save names',

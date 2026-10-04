@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
 const root=path.join(__dirname,'..'),I18N=require('../js/i18n.js');
-const src=['index.html','js/app.js','js/journal.js','js/sis.js','js/pdf-quiz.js','js/sim.js','js/mn3d.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n').replace(/&amp;/g,'&');
+const src=['index.html','js/app.js','js/journal.js','js/sis.js','js/pdf-quiz.js','js/report.js','js/sim.js','js/mn3d.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n').replace(/&amp;/g,'&');
 test('RU va EN lug‘atlari bir xil kalitlarga ega',()=>{
   const a=Object.keys(I18N.ru),b=Object.keys(I18N.en);
   assert.deepEqual(a.filter(x=>!b.includes(x)),[],'EN da yo‘q');assert.deepEqual(b.filter(x=>!a.includes(x)),[],'RU da yo‘q');
