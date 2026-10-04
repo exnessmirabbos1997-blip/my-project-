@@ -12,6 +12,11 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<dialog id="pwDlg" aria-labelledby="pwT"><form id="pwForm" method="dialog"><h2 id="pwT" class="sh" style="margin-top:0">Parolni kiriting</h2>
+<p class="note" style="margin-top:0">Haqiqiy teglarni ko‘rish uchun parol kerak.</p>
+<label for="pwIn">Parol</label><input id="pwIn" type="password" autocomplete="current-password">
+<p class="note" id="pwMsg" role="alert" style="color:var(--trip)"></p>
+<div class="btns"><button type="submit">Tasdiqlash</button><button type="button" class="sec" id="pwCancel">Bekor qilish</button></div></form></dialog>
 <a class="skip" href="#main">Asosiy mazmunga o‘tish</a>
 <div class="app">
 <nav class="side" aria-label="Bo‘limlar">
@@ -37,7 +42,7 @@
 <div class="mnav" id="mnav"><button class="mn" data-view="overview">Umumiy ko‘rinish</button><button class="mn" data-view="mimic">Mnemosxema</button><button class="mn" data-view="3d">3D ko‘rinish</button><button class="mn" data-view="sis">SIS blokirovka</button><button class="mn" data-view="trends">Trendlar</button><button class="mn" data-view="ai">AI xabarlari va indeks</button><button class="mn" data-view="review">Hodisa tahlili (Review)</button><button class="mn" data-view="journal">Hodisalar jurnali<span class="bdg"></span></button><button class="mn" data-view="batch">Ommaviy sinov</button><button class="mn" data-view="data">O‘z ma’lumotingiz</button><button class="mn" data-view="math">Matematik model</button><button class="mn" data-view="settings">Sozlamalar</button></div>
 <button type="button" class="tbtn" id="ctrlT" aria-expanded="false" aria-controls="ctrl">⚙ Parametrlar</button>
 <div class="ctrl" id="ctrl">
-<div class="f"><label for="kind">Holat turi</label><select id="kind"></select></div>
+<div class="f"><label for="kind">Holat turi</label><div style="display:flex;gap:6px"><select id="kind" style="flex:1;min-width:0"></select><button type="button" class="tbtn" id="kindEdit" aria-label="Holat turlarini tahrirlash" title="Holat turlarini tahrirlash">✎</button></div></div>
 <div class="f" style="min-width:130px"><label for="ftank">Nosozlik rezervuari</label><select id="ftank"><option value="0">A rezervuar</option><option value="1">B rezervuar</option></select></div>
 <div class="f" style="min-width:90px;width:90px"><label for="seed">Variant</label><input id="seed" type="number" value="3" min="1" step="1"></div>
 <button id="run">▶ Ishga tushirish</button><button id="show" class="sec">To‘liq ko‘rsatish</button>
@@ -217,12 +222,26 @@ tashxis aniqligi = to‘g‘ri sabab va rezervuar / jami ssenariy</div>
 <p class="note">P&amp;ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,6 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.</p>
 <div class="btns"><button id="apply">Qo‘llash</button><button id="reset" class="sec">Standart qiymatlar</button></div></div>
 </div>
-<div class="card" style="margin-top:14px"><h2 class="sh">Haqiqiy teglar (ixtiyoriy)</h2>
-<p class="note" style="margin-top:0">Korxona teglari dasturda saqlanmaydi. Ularni JSON fayl sifatida yuklasangiz, yuqoridagi “Haqiqiy” tanlovi ishlaydi; fayl faqat shu brauzerda (qurilmada) turadi va hech qayerga yuborilmaydi.</p>
-<div class="btns"><button id="tagsImp" type="button">Teglar faylini yuklash (JSON)</button><button id="tagsDel" type="button" class="sec">Haqiqiy teglarni o‘chirish</button></div>
-<p class="note" id="tagsMsg" role="status"></p><input id="tagsFile" type="file" accept=".json,application/json" hidden></div>
+<div class="card" style="margin-top:14px"><h2 class="sh">Haqiqiy teglar paroli</h2>
+<p class="note" style="margin-top:0">“Haqiqiy” tanlanganda shu parol so‘raladi. Parolni shu yerda yangilash mumkin; yangi parol faqat shu qurilmadagi brauzer/dasturda saqlanadi.</p>
+<div class="pgrid" style="max-width:520px"><div><label for="pwOld">Joriy parol</label><input id="pwOld" type="password" autocomplete="current-password"></div>
+<div></div><div><label for="pwNew">Yangi parol (kamida 8 belgi)</label><input id="pwNew" type="password" autocomplete="new-password"></div>
+<div><label for="pwNew2">Yangi parolni takrorlang</label><input id="pwNew2" type="password" autocomplete="new-password"></div></div>
+<div class="btns"><button id="pwChg" type="button">Parolni yangilash</button><button id="pwReset" type="button" class="sec">Dastlabki parolga qaytarish</button></div>
+<p class="note" id="pwChgMsg" role="status"></p></div>
+<div class="card" style="margin-top:14px" id="knCard"><h2 class="sh">Holat turlari (tahrirlash)</h2>
+<p class="note" style="margin-top:0">Holat nomlarini o‘zgartiring yoki o‘zingizning nomli holatingizni yozing: u tanlangan asosiy model bo‘yicha hisoblanadi.</p>
+<div id="knBox" style="max-width:640px"></div>
+<div class="btns"><button id="knSave" type="button">Nomlarni saqlash</button><button id="knReset" type="button" class="sec">Asl nomlarni tiklash</button></div>
+<h2 class="sh">O‘z holatingizni qo‘shish</h2>
+<div class="pgrid" style="max-width:640px"><div><label for="kcName">Yangi holat nomi</label><input id="kcName" type="text" maxlength="80"></div><div><label for="kcBase">Asosiy model</label><select id="kcBase"></select></div></div>
+<div class="btns"><button id="kcAdd" type="button">Qo‘shish</button></div>
+<ul id="kcList" style="padding-left:18px;font-size:13px"></ul>
+<p class="note" id="knMsg" role="status"></p></div>
 </section>
 </div></main></div>
+<script src="js/vault.js"></script>
+<script src="js/tags-enc.js"></script>
 <script src="js/sim.js"></script>
 <script src="js/sprites.js"></script>
 <script src="js/app.js"></script>

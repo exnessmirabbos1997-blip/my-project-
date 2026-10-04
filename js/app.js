@@ -10,17 +10,38 @@ const TAGS={
   src1a:'Yengil kondensat',src1b:'1-manbadan',src1t:'M-1',src2a:'Yengil kondensat',src2b:'2-manbadan',src2t:'M-2',dest1:'Yengil kondensat',dest2:'vagon quyish stansiyasiga',fqi1:'Kondensat',fqi2:'ishlab chiqarish',fqiU:'m³/sutka',
   dest:'Vagon quyish stansiyasiga',fqiL:'Kondensat ishlab chiqarish'}
 };
-// Haqiqiy (korxona) teglari kodda saqlanmaydi: foydalanuvchi JSON fayl sifatida yuklaydi va faqat shu brauzerda (localStorage) turadi.
-const PLANT_KEY='qtags_plant';
-function tagsLoad(){try{const t=sanitizeTags(JSON.parse(localStorage.getItem(PLANT_KEY)||'null'),TAGS.anon);if(t)TAGS.plant=t}catch(e){}}
-tagsLoad();
+// Haqiqiy (korxona) teglari kodda ochiq turmaydi: js/tags-enc.js da AES-GCM bilan shifrlangan, parol kiritilgach xotirada ochiladi (js/vault.js).
 const TG=()=>TAGS[$('tags').value]||TAGS.anon;
 const XN=['Chegaraga yaqinlik (x₁)','Trip’gacha vaqt (x₂)','Anomaliya (x₃)','DCS–SIS tafovuti (x₄)'];
 const SIFL=['LALL (sath past-past, SIS)','LAHH (sath yuqori-yuqori, SIS)','PVSV vakuum (−1,6 kPag)'];
 const SIFK=['LALL','LAHH','PVSV vakuum'];
 const PDEF=plantDefaults();
 let P={...PDEF},simModel=null,model=null,cur=null,prog=0,hover=-1,timer=null,mode='sim',lastBatch=null,working=false,geo=null,lastW=0;
-for(const k in KINDS){const o=document.createElement('option');o.value=k;o.textContent=KINDS[k];$('kind').appendChild(o)}$('kind').value='f4';$('ftank').value='1';
+// Holat turlari: nomlarini o'zgartirish va o'z nomli holatlar qo'shish (har biri asosiy modellardan biriga tayanadi)
+const KDEF={...KINDS},KBASE=Object.keys(KDEF),KIND_KEY='qkinds',KC_KEY='qkinds_custom';
+let KC=[];
+const lsGet=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+const cleanName=s=>String(s).replace(/[<>&"'`]/g,'').trim().slice(0,80);
+function kindsLoad(){Object.assign(KINDS,KDEF);for(const k of Object.keys(KINDS))if(!KBASE.includes(k))delete KINDS[k];
+  const n=lsGet(KIND_KEY,{});if(n&&typeof n==='object')for(const k of KBASE)if(typeof n[k]==='string'&&cleanName(n[k]))KINDS[k]=cleanName(n[k]);
+  const c=lsGet(KC_KEY,[]);KC=(Array.isArray(c)?c:[]).filter(x=>x&&/^c\d{1,4}$/.test(x.id)&&typeof x.name==='string'&&cleanName(x.name)&&KBASE.includes(x.base)).slice(0,20).map(x=>({id:x.id,name:cleanName(x.name),base:x.base}));
+  for(const x of KC)KINDS[x.id]=x.name}
+const kindBase=k=>{const c=KC.find(x=>x.id===k);return c?c.base:k};
+function kindsRebuild(){const s=$('kind'),keep=s.value||'f4';s.textContent='';for(const k in KINDS){const o=document.createElement('option');o.value=k;o.textContent=KINDS[k];s.appendChild(o)}
+  s.value=KINDS[keep]!==undefined?keep:'f4';
+  const box=$('knBox');if(!box)return;box.textContent='';
+  for(const k of KBASE){const l=document.createElement('label');l.textContent=KDEF[k];l.htmlFor='kn_'+k;const i=document.createElement('input');i.type='text';i.id='kn_'+k;i.maxLength=80;i.value=KINDS[k];i.className='kni';box.append(l,i)}
+  const cl=$('kcList');cl.textContent='';for(const x of KC){const li=document.createElement('li');li.textContent=x.name+' — '+KDEF[x.base]+' ';const b=document.createElement('button');b.type='button';b.className='sec';b.textContent=tr('O‘chirish');b.onclick=()=>{KC=KC.filter(y=>y.id!==x.id);lsSet(KC_KEY,KC);kindsLoad();kindsRebuild()};li.appendChild(b);cl.appendChild(li)}}
+kindsLoad();kindsRebuild();$('kind').value='f4';$('ftank').value='1';
+{const sel=$('kcBase');for(const k of KBASE){const o=document.createElement('option');o.value=k;o.textContent=KDEF[k];sel.appendChild(o)}}
+$('knSave').onclick=()=>{const n={};for(const k of KBASE){const v=cleanName($('kn_'+k).value);if(v&&v!==KDEF[k])n[k]=v}
+  if(!lsSet(KIND_KEY,n)){$('knMsg').textContent=tr('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('knMsg').textContent=tr('Saqlandi.');if(cur)render()};
+$('knReset').onclick=()=>{try{localStorage.removeItem(KIND_KEY)}catch(e){}kindsLoad();kindsRebuild();$('knMsg').textContent=tr('Asl nomlar tiklandi.');if(cur)render()};
+$('kcAdd').onclick=()=>{const nm=cleanName($('kcName').value);if(!nm){$('knMsg').textContent=tr('Holat nomini yozing.');return}if(KC.length>=20){$('knMsg').textContent=tr('Ko‘pi bilan 20 ta o‘z holati.');return}
+  let id=1;while(KC.some(x=>x.id==='c'+id))id++;KC.push({id:'c'+id,name:nm,base:$('kcBase').value});
+  if(!lsSet(KC_KEY,KC)){KC.pop();$('knMsg').textContent=tr('Xato: brauzer xotirasi yopiq, saqlanmadi.');return}kindsLoad();kindsRebuild();$('kind').value='c'+id;$('kcName').value='';$('knMsg').textContent=tr('Qo‘shildi va tanlandi.')};
+$('kindEdit').onclick=()=>{showView('settings');const e=$('knCard');if(e)e.scrollIntoView({block:'start'})};
 function readP(){const raw=[1,2,3,4].map(i=>+$('w'+i).value);const s=raw.reduce((a,b)=>a+b,0)||1;P.w=raw.map(x=>x/s);raw.forEach((x,i)=>$('w'+(i+1)+'v').textContent=fmt(P.w[i],2));
   P.RTH=+$('rth').value;$('rthv').textContent=fmt(P.RTH,2);P.sev=+$('sev').value;$('sevv').textContent=P.sev>0?fmt(P.sev,2):'tasodifiy';P.noise=+$('noise').value;$('noisev').textContent='×'+fmt(P.noise,2)}
 function readPlant(){const g=(id,def)=>{const v=parseFloat($(id).value);return isFinite(v)?v:def};
@@ -775,7 +796,7 @@ function reviewHtml(){
   const D=reviewData(),{tg,run,dg,e,a,t,rows}=D,dt=P.dt,E=buildEvents(),C=conclusions(D);
   const truth=mode==='sim'?TRUTH[run.kind]:null,ok=truth!==null&&dg.code===truth&&(truth==='none'||dg.tank===run.fT);
   const ld=x=>x===null?'—':fmt(x,1)+' min';
-  let h=`<p><b>${esc(mode==='sim'?KINDS[run.kind]:'Yuklangan ma’lumot')}</b>${mode==='sim'&&run.kind!=='normal'?' · nosozlik rezervuari: '+tg.tk[run.fT]:''}</p>`;
+  let h=`<p><b>${esc(mode==='sim'?(run.label||KINDS[run.kind]):'Yuklangan ma’lumot')}</b>${mode==='sim'&&run.kind!=='normal'?' · nosozlik rezervuari: '+tg.tk[run.fT]:''}</p>`;
   h+=`<p><b>AI tashxisi:</b> ${esc(CAUSE[dg.code])}${dg.code!=='none'?' ('+tg.tk[dg.tank]+', '+fmt(dg.k*dt,0)+'-daqiqadan)':''}`+(truth!==null?` <span class="pill" style="background:${ok?'var(--ok)':'var(--trip)'}">${ok?'haqiqiy sababga mos':'haqiqiy sababga mos emas'}</span>`:'')+`</p>`;
   h+=`<p>${a.trip>=0?`Himoya hodisasi: ${fmt(a.trip*dt,0)}-daqiqada, ${tg.tk[a.tripTank]}, ${sifTag(a.tripTank,a.tripType)}. Hodisadan oldin berilgan ogohlantirishlar: mavjud alarmlar — ${e.L.alarm===null?'ishlamadi':ld(e.L.alarm)}, AI indeksi — ${e.L.warn===null?'ishlamadi':ld(e.L.warn)}, AI diagnostika — ${e.L.diag===null?'ishlamadi':ld(e.L.diag)}.`:'SIS trip bo‘lmadi.'}</p>`;
   h+=`<h2>1. Voqealar ketma-ketligi</h2><div class="tw" tabindex="0"><table><tr><th>Vaqt, min</th><th>Manba</th><th>Hodisa</th></tr>`+E.map(v=>`<tr><td>${fmt(v.k*dt,1)}</td><td>${esc(v.src)}</td><td>${esc(v.txt)}</td></tr>`).join('')+`</table></div><p class="note">* Haqiqiy sabab faqat simulyatsiyada ma’lum; real hodisada u tizimga ko‘rinmaydi va AI tashxisi bilan solishtirish uchun berilgan.</p>`;
@@ -783,13 +804,13 @@ function reviewHtml(){
   h+=`<h2>3. Texnolog xulosasi</h2><p>${esc(C.tech)}</p>${C.tr.length?'<ul>'+C.tr.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}`;
   h+=`<h2>4. KIP xulosasi</h2><p>${esc(C.kip)}</p>${C.kr.length?'<ul>'+C.kr.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}`;
   h+=`<p class="note">Xulosa AI modeli (Isolation Forest, dinamik xavf indeksi) va fizik qoidalar asosida avtomatik tuzildi. Yakuniy xulosani texnolog va KIP mutaxassisi tasdiqlashi kerak.</p>`;
-  cur.reviewRows=[['Hodisa tahlili (Review)'],['Holat',mode==='sim'?KINDS[run.kind]:'Yuklangan ma’lumot'],['AI tashxisi',CAUSE[dg.code]],...(truth!==null?[['Haqiqiy sabab bilan mosligi',ok?'mos':'mos emas']]:[]),['Himoya hodisasi',a.trip>=0?`${fmt(a.trip*dt,1)} min, ${tg.tk[a.tripTank]}, ${a.tripType}`:'yo‘q'],['Mavjud alarmlar lead, min',ld(e.L.alarm)],['AI indeksi lead, min',ld(e.L.warn)],['AI diagnostika lead, min',ld(e.L.diag)],[],['Voqealar ketma-ketligi'],['Vaqt, min','Manba','Hodisa'],...E.map(v=>[+(v.k*dt).toFixed(1),v.src,v.txt]),[],['Parametrlar o‘zgarishi',tg.tk[t]],['Parametr','Oldin','Hodisa paytida'],...rows.map(r=>[r[0],isFinite(r[1])?+r[1].toFixed(r[3]):'NaN',isFinite(r[2])?+r[2].toFixed(r[3]):'NaN']),[],['Texnolog xulosasi',C.tech],...C.tr.map(x=>['',x]),[],['KIP xulosasi',C.kip],...C.kr.map(x=>['',x])];
+  cur.reviewRows=[['Hodisa tahlili (Review)'],['Holat',mode==='sim'?(run.label||KINDS[run.kind]):'Yuklangan ma’lumot'],['AI tashxisi',CAUSE[dg.code]],...(truth!==null?[['Haqiqiy sabab bilan mosligi',ok?'mos':'mos emas']]:[]),['Himoya hodisasi',a.trip>=0?`${fmt(a.trip*dt,1)} min, ${tg.tk[a.tripTank]}, ${a.tripType}`:'yo‘q'],['Mavjud alarmlar lead, min',ld(e.L.alarm)],['AI indeksi lead, min',ld(e.L.warn)],['AI diagnostika lead, min',ld(e.L.diag)],[],['Voqealar ketma-ketligi'],['Vaqt, min','Manba','Hodisa'],...E.map(v=>[+(v.k*dt).toFixed(1),v.src,v.txt]),[],['Parametrlar o‘zgarishi',tg.tk[t]],['Parametr','Oldin','Hodisa paytida'],...rows.map(r=>[r[0],isFinite(r[1])?+r[1].toFixed(r[3]):'NaN',isFinite(r[2])?+r[2].toFixed(r[3]):'NaN']),[],['Texnolog xulosasi',C.tech],...C.tr.map(x=>['',x]),[],['KIP xulosasi',C.kip],...C.kr.map(x=>['',x])];
   return h;
 }
 // ---------- boshqaruv ----------
 function runSimNow(anim){if(!simModel)return;mode='sim';model=simModel;P.dt=DT;const r=rngMake(Math.max(1,Math.floor(+$('seed').value||1)));
-  const kind=$('kind').value,ft=+$('ftank').value;const run=runPlant2(kind,ft,r,P);$('ctank').value=String(kind==='normal'?run.load:ft);load(run);
-  $('status').textContent=(kind==='normal'?'Normal ish: bir rezervuar qabul qiladi, ikkinchisidan quyiladi.':KINDS[kind]+' — '+TG().tk[ft]+'.')+(run.ft>=0?' Nosozlik ~'+fmt(run.ft*DT,0)+'-daqiqada (kulrang nuqtali chiziq).':'');
+  const kindSel=$('kind').value,kind=kindBase(kindSel),ft=+$('ftank').value;const run=runPlant2(kind,ft,r,P);run.label=KINDS[kindSel];$('ctank').value=String(kind==='normal'?run.load:ft);load(run);
+  $('status').textContent=(kind==='normal'?'Normal ish: bir rezervuar qabul qiladi, ikkinchisidan quyiladi.':(run.label||KINDS[kind])+' — '+TG().tk[ft]+'.')+(run.ft>=0?' Nosozlik ~'+fmt(run.ft*DT,0)+'-daqiqada (kulrang nuqtali chiziq).':'');
   if(anim)play();else{prog=run.tanks[0].Ld.length;render()}}
 function play(){clearInterval(timer);prog=0;hover=-1;const T=cur.run.tanks[0].Ld.length;timer=setInterval(()=>{prog+=Math.round(2+(+$('speed').value)*3);if(prog>=T-1){prog=T-1;clearInterval(timer);timer=null}render()},30)}
 function mv(e){if(!geo||!cur)return;const rc=e.currentTarget.getBoundingClientRect();const x=e.clientX-rc.left;const k=Math.round((x-geo.m.l)/geo.pw*(geo.T-1));hover=k>=0&&k<=Math.min(prog,geo.T-1)?k:-1;render()}
@@ -797,19 +818,42 @@ let hT=null;['c1','c2','c3'].forEach(id=>{const c=$(id);c.addEventListener('poin
   const end=e=>{clearTimeout(hT);hT=setTimeout(()=>{hover=-1;if(cur)render()},e.pointerType==='mouse'?0:1800)};c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);c.addEventListener('pointerleave',end)});
 ['rth','w1','w2','w3','w4'].forEach(id=>$(id).addEventListener('input',()=>{readP();if(cur)load(cur.run)}));
 ['sev','noise'].forEach(id=>{$(id).addEventListener('input',readP);$(id).addEventListener('change',()=>{if(mode==='sim')runSimNow(false)})});
-{let sv='anon';try{sv=localStorage.getItem('qtags_rez')||'anon'}catch(e){}if(TAGS[sv])$('tags').value=sv}
-if($('tags').value==='plant'&&!TAGS.plant)$('tags').value='anon';
+try{localStorage.removeItem('qtags_plant');localStorage.removeItem('qtags_rez')}catch(e){}   // eski versiyadan qolganlar; har ochilganda anonim rejim
 document.body.dataset.tags=$('tags').value;
-function tagsApply(){document.body.dataset.tags=$('tags').value;try{localStorage.setItem('qtags_rez',$('tags').value)}catch(e){}tagsInfo();if(cur){render();$('review').innerHTML=reviewHtml();try{__journal.refresh()}catch(e){}}}
-function tagsInfo(){const m=$('tagsMsg');if(m)m.textContent=TAGS.plant?'Haqiqiy teglar yuklangan (faqat shu brauzerda saqlanadi).':'Haqiqiy teglar yuklanmagan — hozir faqat anonim teglar.';const d=$('tagsDel');if(d)d.disabled=!TAGS.plant}
-$('tags').onchange=()=>{if($('tags').value==='plant'&&!TAGS.plant){$('tags').value='anon';$('tagsFile').click();return}tagsApply()};
-$('tagsImp').onclick=()=>$('tagsFile').click();
-$('tagsFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;if(f.size>1e5){$('tagsMsg').textContent='Xato: fayl juda katta.';return}
-  const r=new FileReader();r.onload=()=>{let t=null;try{t=sanitizeTags(JSON.parse(r.result),TAGS.anon)}catch(er){}
-    if(!t){$('tagsMsg').textContent='Xato: teglar fayli formati noto‘g‘ri.';return}
-    TAGS.plant=t;try{localStorage.setItem(PLANT_KEY,JSON.stringify(t))}catch(er){}$('tags').value='plant';tagsApply()};r.readAsText(f)};
-$('tagsDel').onclick=()=>{delete TAGS.plant;try{localStorage.removeItem(PLANT_KEY)}catch(e){}$('tags').value='anon';tagsApply()};
-tagsInfo();
+const vaultBox=()=>{try{const s=localStorage.getItem('qtags_vault');if(s){const b=JSON.parse(s);if(Vault.valid(b))return b}}catch(e){}return window.PLANT_VAULT||null};
+function tagsApply(){document.body.dataset.tags=$('tags').value;if(cur){render();$('review').innerHTML=reviewHtml();try{__journal.refresh()}catch(e){}}}
+// Parol oynasi: parol kiritilsa matn, bekor qilinsa null qaytaradi
+function askPw(msg){const d=$('pwDlg'),inp=$('pwIn');return new Promise(res=>{let done=false;$('pwMsg').textContent=msg||'';inp.value='';
+  const fin=v=>{if(done)return;done=true;d.close();d.onclose=null;$('pwForm').onsubmit=null;$('pwCancel').onclick=null;res(v)};
+  $('pwForm').onsubmit=e=>{e.preventDefault();fin(inp.value)};$('pwCancel').onclick=()=>fin(null);d.onclose=()=>fin(null);d.showModal();inp.focus()})}
+let pwFails=0,pwLock=0;
+async function unlockPlant(){
+  if(!Vault.available()){$('status').textContent=tr('Xato: bu brauzerda shifrlash mavjud emas (https yoki zamonaviy brauzer kerak).');return false}
+  const box=vaultBox();if(!box){$('status').textContent=tr('Bu nusxada haqiqiy teglar yo‘q.');return false}
+  let msg='';
+  for(;;){
+    const wait=pwLock-Date.now();if(wait>0)msg=tr('Juda ko‘p urinish. Kuting')+': '+Math.ceil(wait/1000)+' s';
+    const pw=await askPw(msg);if(pw===null)return false;
+    if(pwLock>Date.now()){msg=tr('Juda ko‘p urinish. Kuting')+': '+Math.ceil((pwLock-Date.now())/1000)+' s';continue}
+    const t=await Vault.open(box,pw),tags=t&&sanitizeTags(t,TAGS.anon);
+    if(tags){pwFails=0;TAGS.plant=tags;return true}
+    if(++pwFails>=5){pwLock=Date.now()+30000;pwFails=0}
+    msg=tr('Parol noto‘g‘ri.')}}
+$('tags').onchange=async()=>{
+  if($('tags').value==='plant'){$('tags').value='anon';if(await unlockPlant())$('tags').value='plant'}
+  else delete TAGS.plant;   // anonimga qaytilganda qulflanadi: keyingi safar yana parol so'raladi
+  tagsApply()};
+// Parolni yangilash (Sozlamalar): eski parol bilan ochiladi, yangisi bilan qayta shifrlanadi va faqat shu qurilmada saqlanadi
+$('pwChg').onclick=async()=>{const m=$('pwChgMsg'),o=$('pwOld').value,n=$('pwNew').value,n2=$('pwNew2').value;
+  const say=(t,bad)=>{m.textContent=tr(t);m.style.color=bad?'var(--trip)':'var(--ok)'};
+  if(!Vault.available())return say('Xato: bu brauzerda shifrlash mavjud emas.',1);
+  const box=vaultBox();if(!box)return say('Bu nusxada haqiqiy teglar yo‘q.',1);
+  if(n.length<8)return say('Yangi parol kamida 8 belgi bo‘lishi kerak.',1);
+  if(n!==n2)return say('Yangi parol ikki marta bir xil kiritilmadi.',1);
+  const t=await Vault.open(box,o);if(!t)return say('Eski parol noto‘g‘ri.',1);
+  try{localStorage.setItem('qtags_vault',JSON.stringify(await Vault.seal(t,n)))}catch(e){return say('Xato: brauzer xotirasi yopiq, parol saqlanmadi.',1)}
+  $('pwOld').value=$('pwNew').value=$('pwNew2').value='';say('Parol yangilandi (faqat shu qurilmada).',0)};
+$('pwReset').onclick=()=>{if(!confirm(tr('Parol dastlabki (o‘rnatilgan) holatga qaytariladi. Davom etasizmi?')))return;try{localStorage.removeItem('qtags_vault')}catch(e){}$('pwChgMsg').textContent=tr('Dastlabki parol tiklandi.');$('pwChgMsg').style.color='var(--ok)'};
 $('ctank').onchange=()=>{if(cur)render()};
 $('run').onclick=()=>{if(LV.on)lvStop();if(mode==='sim')runSimNow(true);else if(cur)play()};
 $('show').onclick=()=>{clearInterval(timer);timer=null;prog=cur?cur.run.tanks[0].Ld.length:0;hover=-1;render()};

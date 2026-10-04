@@ -20,14 +20,40 @@ const VIEWS=['overview','mimic','3d','sis','trends','ai','review','journal','bat
   // SIS: kanalsiz ma'lumotda yolg'on qizil chip yo'q
   await p.evaluate(()=>{const r=cur.run;r.tanks.forEach(o=>{o.sisOK=false;o.S1.fill(NaN);o.S2.fill(NaN)});load(r);showView('sis')});await p.waitForTimeout(200);
   ok(await p.evaluate(()=>!document.querySelector('#sisBox .chip.bad')),'SIS: kanalsiz ma‘lumotda yolg‘on chip yo‘q');
-  // teglar: yuklanmagan bo'lsa Haqiqiy tanlansa anonimga qaytadi, fayl yuklangach ishlaydi
+  // parol bilan himoyalangan haqiqiy teglar
+  const PW='Test-parol-123',PW2='Yangi-parol-456';
+  await p.evaluate(async pw=>{window.PLANT_VAULT=await Vault.seal({tk:['TEST-A','TEST-B']},pw)},PW);
   await p.evaluate(()=>showView('overview'));
-  const anonTxt=await p.evaluate(()=>TG().tk[0]);
-  await p.setInputFiles('#tagsFile',{name:'t.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({tk:['TEST-A<script>','TEST-B']}))});await p.waitForTimeout(300);
-  const t2=await p.evaluate(()=>[$('tags').value,TG().tk.join('|'),localStorage.getItem('qtags_plant')!==null]);
-  ok(t2[0]==='plant'&&t2[1]==='TEST-Ascript|TEST-B'&&t2[2],'teglar fayli yuklandi va tozalandi: '+t2[1]);
-  await p.click('#tagsDel').catch(()=>p.evaluate(()=>$('tagsDel').click()));await p.waitForTimeout(200);
-  ok(await p.evaluate(()=>$('tags').value==='anon'&&!TAGS.plant),'teglarni o‘chirish anonimga qaytaradi');
+  const sel=async v=>{await p.selectOption('#tags',v)};
+  await sel('plant');await p.waitForSelector('#pwDlg[open]');
+  await p.fill('#pwIn','notogri-parol');await p.click('#pwForm button[type=submit]');await p.waitForTimeout(600);
+  ok(await p.evaluate(()=>$('pwDlg').open&&$('pwMsg').textContent.length>0&&!TAGS.plant),'noto‘g‘ri parol rad etiladi');
+  await p.fill('#pwIn',PW);await p.click('#pwForm button[type=submit]');await p.waitForTimeout(600);
+  ok(await p.evaluate(()=>!$('pwDlg').open&&$('tags').value==='plant'&&TG().tk.join('|')==='TEST-A|TEST-B'),'to‘g‘ri parol haqiqiy teglarni ochadi');
+  await sel('anon');ok(await p.evaluate(()=>!TAGS.plant&&TG().tk[0]==='T-1A'),'anonimga qaytganda qulflanadi');
+  await sel('plant');await p.waitForSelector('#pwDlg[open]');await p.click('#pwCancel');await p.waitForTimeout(300);
+  ok(await p.evaluate(()=>$('tags').value==='anon'&&!$('pwDlg').open),'bekor qilish anonimda qoldiradi');
+  // parolni yangilash
+  await p.evaluate(()=>showView('settings'));
+  await p.fill('#pwOld','xato');await p.fill('#pwNew',PW2);await p.fill('#pwNew2',PW2);await p.click('#pwChg');await p.waitForTimeout(600);
+  ok(await p.evaluate(()=>localStorage.getItem('qtags_vault')===null),'eski parol xato bo‘lsa yangilanmaydi');
+  await p.fill('#pwOld',PW);await p.click('#pwChg');await p.waitForTimeout(800);
+  ok(await p.evaluate(()=>localStorage.getItem('qtags_vault')!==null),'parol yangilandi');
+  await p.evaluate(()=>showView('overview'));await sel('plant');await p.waitForSelector('#pwDlg[open]');
+  await p.fill('#pwIn',PW);await p.click('#pwForm button[type=submit]');await p.waitForTimeout(600);
+  ok(await p.evaluate(()=>$('pwDlg').open),'eski parol endi ishlamaydi');
+  await p.fill('#pwIn',PW2);await p.click('#pwForm button[type=submit]');await p.waitForTimeout(600);
+  ok(await p.evaluate(()=>$('tags').value==='plant'&&TG().tk[0]==='TEST-A'),'yangi parol ishlaydi');
+  await sel('anon');
+  // holat turlarini tahrirlash va o'z holatini qo'shish
+  await p.evaluate(()=>showView('settings'));
+  await p.fill('#kn_f1','Mening quyish holatim');await p.click('#knSave');await p.waitForTimeout(200);
+  ok(await p.evaluate(()=>[...$('kind').options].some(o=>o.value==='f1'&&o.textContent==='Mening quyish holatim')),'holat nomi o‘zgartiriladi');
+  await p.fill('#kcName','Test <b>holat</b>');await p.selectOption('#kcBase','f2');await p.click('#kcAdd');await p.waitForTimeout(300);
+  ok(await p.evaluate(()=>{const o=$('kind').selectedOptions[0];return o.value==='c1'&&o.textContent==='Test bholat/b'}),'o‘z holati qo‘shiladi, belgilar tozalanadi');
+  await p.evaluate(()=>{showView('overview');$('run').click()});await p.waitForTimeout(800);
+  ok(await p.evaluate(()=>cur.run.kind==='f2'&&cur.run.label==='Test bholat/b'&&$('status').textContent.includes('Test bholat/b')),'o‘z holati asosiy model bo‘yicha ishlaydi');
+  await p.evaluate(()=>{showView('settings');$('knReset').click();KC=[];lsSet(KC_KEY,[]);kindsLoad();kindsRebuild()});
   if(mob){await p.evaluate(()=>showView('sis'));await p.waitForTimeout(400);
    ok(await p.evaluate(()=>{const a=document.querySelector('#mnav .on').getBoundingClientRect();return a.left>=-1&&a.right<=innerWidth+1}),'mobil menyuda faol tab ko‘rinadi');
    ok(await p.evaluate(()=>getComputedStyle($('show')).display==='none'),'mobil boshqaruv panel yig‘ilgan');

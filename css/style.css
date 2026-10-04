@@ -194,3 +194,7 @@ code{overflow-wrap:anywhere}
 .sh{font-size:15px;margin:14px 0 6px}
 #ctrlT{display:none;margin:0 0 8px}
 @media(max-width:700px){#ctrlT{display:inline-block}#ctrl:not(.open) .f,#ctrl:not(.open) #show{display:none}}
+
+dialog{background:var(--pan);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:18px;width:min(380px,92vw)}dialog::backdrop{background:rgba(0,0,0,.6)}
+
+.kni{margin-bottom:6px}#kcList li{margin:4px 0}

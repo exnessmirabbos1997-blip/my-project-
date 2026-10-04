@@ -33,9 +33,10 @@ Releases bo‘limidan `Kondensat-rezervuar-AI-Setup-<versiya>.exe`. Yangi versiy
 ## Bitta faylli versiya
 `node tools/build-single.js` → `dist/Kondensat-rezervuar-AI.html` (internetsiz ochiladi). `--artifact` — claude.ai uchun variant.
 
-## Anonim / Haqiqiy teglar
-Yuqori paneldagi **Anonim | Haqiqiy** tanlovi butun ilovaga (mnemosxema, SIS blokirovka, Review, jurnal, eksport) ta’sir qiladi va brauzerda eslab qolinadi. Boshlang‘ich qiymat — *Anonim*.
-Korxonaning haqiqiy teglari **dastur kodida va repoda saqlanmaydi**. Ularni *Sozlamalar → Haqiqiy teglar* orqali JSON fayl sifatida yuklaysiz (kalitlar anonim to‘plam bilan bir xil: `tk`, `LI`, `PI`, `S1`, `S2`, `XVin`, …). Fayl tekshiriladi (xavfli belgilar olib tashlanadi) va faqat shu qurilmadagi brauzer xotirasida (localStorage) turadi; hech qayerga yuborilmaydi. Fayl yuklanmaguncha “Haqiqiy” tanlansa, fayl tanlash oynasi ochiladi.
+## Anonim / Haqiqiy teglar (parol bilan)
+Yuqori paneldagi **Anonim | Haqiqiy** tanlovi butun ilovaga ta’sir qiladi. Har ochilganda *Anonim* boshlanadi. **Haqiqiy** tanlansa, parol so‘raladi; to‘g‘ri parol kiritilsa korxona teglari ko‘rinadi, *Anonim*ga qaytilsa qayta qulflanadi.
+Haqiqiy teglar repoda ochiq saqlanmaydi: `js/tags-enc.js` da AES-256-GCM bilan shifrlangan (kalit PBKDF2-SHA256, 310 000 iteratsiya) — parolsiz o‘qib bo‘lmaydi. Parolni *Sozlamalar → Haqiqiy teglar paroli* bo‘limida yangilash mumkin (yangi parol faqat shu qurilmadagi brauzer/dasturda saqlanadi). Yangi teglar to‘plamini shifrlash: `node tools/make-vault.js teglar.json "kamida 12 belgili parol"`.
+**Holat turlari** ro‘yxati (✎ tugmasi yoki *Sozlamalar → Holat turlari*) nomlarini o‘zgartirish va o‘zingizning nomli holatingizni qo‘shish imkonini beradi.
 
 ## Sinovlar
 `npm test` — model, kiritish va til sinovlari (26 ta). `npm run e2e` — brauzerda (Chromium) 12 ta bo‘lim × 2 ta ekran, mobil menyu, teglar yuklash, SIS va 3D siklini tekshiradi (CI’da ham ishlaydi).

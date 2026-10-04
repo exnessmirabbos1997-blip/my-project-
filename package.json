@@ -5,7 +5,7 @@
   "engines": { "node": ">=20" },
   "description": "Yengil kondensat ombori: DCS/SIS integratsiyalashgan AI erta ogohlantirish va hodisa tahlili simulyatori",
   "scripts": {
-    "test": "node --test tests/model.test.js tests/input.test.js tests/i18n.test.js",
+    "test": "node --test tests/model.test.js tests/input.test.js tests/i18n.test.js tests/vault.test.js",
     "e2e": "node tests/e2e/smoke.js",
     "desktop": "electron .",
     "dist:win": "electron-builder --win --publish never"
