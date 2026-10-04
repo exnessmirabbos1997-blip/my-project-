@@ -1,6 +1,6 @@
 {
   "name": "kondensat-rezervuar",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "engines": { "node": ">=20" },
   "description": "Yengil kondensat ombori: DCS/SIS integratsiyalashgan AI erta ogohlantirish va hodisa tahlili simulyatori",
