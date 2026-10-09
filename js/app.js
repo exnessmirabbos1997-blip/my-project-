@@ -110,9 +110,16 @@ const RDEF=`<defs><linearGradient id="rMV" x1="0" x2="1"><stop offset="0" stop-c
 <radialGradient id="rOffR" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#ffd0cc"/><stop offset=".5" stop-color="#e53935"/><stop offset="1" stop-color="#6b0d0d"/></radialGradient>
 <linearGradient id="rAct" x1="0" x2="1"><stop offset="0" stop-color="#3a4550"/><stop offset=".35" stop-color="#9aa6b2"/><stop offset="1" stop-color="#2c353e"/></linearGradient>
 <linearGradient id="rConc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d949a"/><stop offset="1" stop-color="#4f555a"/></linearGradient>
-<filter id="rSh" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#000" flood-opacity=".5"/></filter>
+<filter id="rSh" x="-35%" y="-35%" width="190%" height="200%"><feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#000" flood-opacity=".5"/></filter>
 <filter id="rGl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter></defs>`;
-const rPipe=d=>`<path d="${d}" fill="none" stroke="#05080b" stroke-opacity=".55" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#8f979f" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#c9cfd5" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f4f7f9" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" transform="translate(-.8 -.8)" opacity=".85"/>`;
+const isLight=()=>document.documentElement.getAttribute('data-theme')==='light';
+// Yorug' mavzuda sahna oq fonda: fon, to'r, oynalar va soyalar mavzuga moslanadi (uskunalar ranglari o'zgarmaydi)
+function rdefT(){if(!isLight())return RDEF;
+  return RDEF.replace('<stop offset="0" stop-color="#1b2a38"/><stop offset="1" stop-color="#0a1119"/>','<stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e7eef4"/>')
+   .replace('stroke="#9fc3e0" stroke-opacity=".045"','stroke="#4f6f89" stroke-opacity=".10"')
+   .replace('<stop offset="0" stop-color="#0e2436"/><stop offset="1" stop-color="#07131e"/>','<stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8f0f7"/>')
+   .replace('flood-color="#000" flood-opacity=".5"','flood-color="#1d2b38" flood-opacity=".24"')}
+const rPipe=d=>`<path d="${d}" fill="none" stroke="${isLight()?'#22313f':'#05080b'}" stroke-opacity="${isLight()?.32:.55}" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#8f979f" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#c9cfd5" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f4f7f9" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" transform="translate(-.8 -.8)" opacity=".85"/>`;
 function valveBody(x,y,open,w){const f=open?'url(#rOn)':'url(#rOff)',g=open?'#3dff7a':'#ff3b30';
   return `<circle cx="${x}" cy="${y}" r="16" fill="${g}" opacity=".28" filter="url(#rGl)"/><g filter="url(#rSh)"><path d="M${x-w} ${y-12}L${x} ${y}L${x-w} ${y+12}Z" fill="${f}" stroke="#1b2127" stroke-width="1.2"/><path d="M${x+w} ${y-12}L${x} ${y}L${x+w} ${y+12}Z" fill="${f}" stroke="#1b2127" stroke-width="1.2"/>
    <rect x="${x-w-3}" y="${y-13}" width="4" height="26" rx="1" fill="url(#rMV)" stroke="#2c343c" stroke-width=".8"/><rect x="${x+w-1}" y="${y-13}" width="4" height="26" rx="1" fill="url(#rMV)" stroke="#2c343c" stroke-width=".8"/></g>
@@ -130,7 +137,7 @@ function pump2(x,y,on,label,xl,sis){const ring=on&&!sis?'#0c5a2a':'#6b0d0d';let 
    <path d="M${x} ${y-17}H${x+19}V${y-9}H${x+12}A17 17 0 1 1 ${x} ${y-17}Z" fill="${on&&!sis?'url(#rOnR)':'url(#rOffR)'}" stroke="#1b2127" stroke-width="1.2"/><path d="M${x-8} ${y+13}L${x-11} ${y+16}H${x+11}L${x+8} ${y+13}Z" fill="#5d666e"/></g>
    <circle cx="${x}" cy="${y}" r="22" fill="${on&&!sis?'#3dff7a':'#ff3b30'}" opacity=".3" filter="url(#rGl)"/><circle cx="${x}" cy="${y}" r="10" fill="#20272e" stroke="${ring}" stroke-width="2.6"/>
    <g class="imp" stroke="#aeb6bd" stroke-width="1.8" stroke-linecap="round">${[0,60,120].map(a=>{const r=a*Math.PI/180;return `<line x1="${(x-7*Math.cos(r)).toFixed(1)}" y1="${(y-7*Math.sin(r)).toFixed(1)}" x2="${(x+7*Math.cos(r)).toFixed(1)}" y2="${(y+7*Math.sin(r)).toFixed(1)}"/>`}).join('')}</g><circle cx="${x}" cy="${y}" r="2.4" fill="#aeb6bd"/>
-   <circle cx="${x+34}" cy="${y-11}" r="2.4" fill="${on&&!sis?'#3dff7a':'#ff3b30'}"/>`+lab(x,y-28,xl)+lab(x+3,y+50,label,{fs:16,b:1,c:on&&!sis?'#4ade80':'#f87171'})}
+   <circle cx="${x+34}" cy="${y-11}" r="2.4" fill="${on&&!sis?'#3dff7a':'#ff3b30'}"/>`+lab(x,y-28,xl)+lab(x+3,y+50,label,{fs:16,b:1,c:on&&!sis?(isLight()?'#15803d':'#4ade80'):(isLight()?'#dc2626':'#f87171')})}
 function tank2(x0,x1,name,lvl,sel,alert,isNaNLvl){const top=252,peak=232,bot=455,st=x1-74,id='t'+x0;
   const shape=`M${x0} ${top}Q${(x0+x1)/2} ${peak} ${x1} ${top}V470H${st}V${bot}H${x0+4}Z`,body=`M${x0} ${top}H${x1}V470H${st}V${bot}H${x0+4}Z`,roof=`M${x0-3} ${top+1}Q${(x0+x1)/2} ${peak-4} ${x1+3} ${top+1}Z`;
   let s=`<defs><clipPath id="cp${id}"><path d="${shape}"/></clipPath></defs>`;
@@ -180,7 +187,7 @@ function autoLayer(){const tg=TG();let s='';
   // --- to'g'ridan-to'g'ri pastga tushuvchi signallar
   s+=ln('M58 621H48V945',D,1)+ln('M742 441V945',D,1)+ln('M1388 441V470H1300V945',D,1)+ln('M1192 652V945',D,1)+ln('M1030 768H1060V945',D,1)+ln('M1030 868H1072V945',D,1)+ln('M1030 776H1084V960',Sr,1);
   // --- qurilmalar
-  const spr=(k,x,y,sc)=>`<use href="#kspr_${k}" transform="translate(${x} ${y}) scale(${sc})"/>`;
+  const spr=(k,x,y,sc)=>(isLight()&&KSPR[k]?`<rect x="${x}" y="${y}" width="${KSPR[k].w*sc}" height="${KSPR[k].h*sc}" rx="9" fill="#26313d" stroke="#3c4a59" stroke-width="1.2" filter="url(#rSh)"/>`:'')+`<use href="#kspr_${k}" transform="translate(${x} ${y}) scale(${sc})"/>`;   // yorug' mavzuda qurilma rasmlari qora taxtachada
   s+=`<rect x="44" y="975" width="1522" height="286" rx="10" fill="none" stroke="var(--line)" stroke-dasharray="4 4"/>`+lab(56,995,'Operator xonasi · avtomatlashtirish tizimi (DCS / SIS)',{a:'start',fs:14,c:'var(--mut)'});
   // DCS kontroller + I/O
   s+=spr('plc',70,1010,1)+ln('M324 1072H352',E,0,2.2)+spr('aomod',352,1020,1);
@@ -216,10 +223,10 @@ const KFLOW=[['src','M158 793H262V352'],['src','M162 863H262V352'],['inA','M262 
  ['outA','M660 427H820V765H960'],['outB','M1310 427H1465V540H820V765H960'],['p2in','M820 765V865H960'],['p1','M994 752H1520'],['p2','M994 853H1250V764'],['p2','M994 853H1168V764'],
  ['rec','M1170 752V668'],['rec','M1068 752V717H1158'],['recA','M1170 645H850V287H672'],['recB','M1170 645H1485V287H1322']];
 const KTX=[[388,660],[1040,1310]];
-function kBuild(){const W=KWR.slice();let s=`<defs><radialGradient id="kP" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e9fffb"/><stop offset=".5" stop-color="#5ff0d8"/><stop offset="1" stop-color="#1fc9ad" stop-opacity="0"/></radialGradient><filter id="kG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8"/></filter><filter id="kS" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7"/></filter>
+function kBuild(){const W=KWR.slice(),LT=isLight();let s=`<defs><radialGradient id="kP" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="${LT?'#0b8f7a':'#e9fffb'}"/><stop offset=".5" stop-color="${LT?'#13b79d':'#5ff0d8'}"/><stop offset="1" stop-color="${LT?'#13b79d':'#1fc9ad'}" stop-opacity="0"/></radialGradient><filter id="kG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8"/></filter><filter id="kS" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".7"/></filter>
   ${KTX.map(([x0,x1],i)=>`<clipPath id="kT${i}"><path d="M${x0} 252Q${(x0+x1)/2} 232 ${x1} 252V470H${x1-74}V455H${x0+4}Z"/></clipPath>`).join('')}</defs>`;
   // quvurlardagi kondensat oqimi
-  KFLOW.forEach(([k,d],i)=>{const G=kGeo(kPts(d)),n=Math.max(3,Math.round(G.L/22));s+=`<g class="kf" data-i="${i}" opacity="0"><path d="${d}" fill="none" stroke="#4ff0d6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 26" opacity=".55" filter="url(#kS)"/>${Array.from({length:n},()=>`<circle r="2" fill="url(#kP)"/>`).join('')}</g>`});
+  KFLOW.forEach(([k,d],i)=>{const G=kGeo(kPts(d)),n=Math.max(3,Math.round(G.L/22));s+=`<g class="kf" data-i="${i}" opacity="0"><path d="${d}" fill="none" stroke="${LT?'#0e9c86':'#4ff0d6'}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 26" opacity=".55" filter="url(#kS)"/>${Array.from({length:n},()=>`<circle r="2" fill="url(#kP)"/>`).join('')}</g>`});
   // rezervuardagi pufakchalar va to'lqin
   KTX.forEach(([x0,x1],i)=>{const bx=x0+62,by=272,R=[[bx,by],[bx+103,by],[bx,by+51],[bx+103,by+51],[bx+4,by+102]];
    s+=`<mask id="kM${i}" maskUnits="userSpaceOnUse" x="${x0-10}" y="220" width="${x1-x0+20}" height="270"><rect x="${x0-10}" y="220" width="${x1-x0+20}" height="270" fill="#fff"/>${R.map(([x,y])=>`<rect x="${x-4}" y="${y-18}" width="94" height="44" rx="3" fill="#000"/>`).join('')}<rect x="${x0+36}" y="352" width="20" height="80" fill="#000"/><rect x="${(x0+x1)/2-40}" y="406" width="84" height="26" fill="#000"/><rect x="${x1-90}" y="428" width="84" height="24" fill="#000"/></mask>`;
@@ -227,7 +234,7 @@ function kBuild(){const W=KWR.slice();let s=`<defs><radialGradient id="kP" cx=".
   // nasos parraklari
   [[977,765],[977,865]].forEach(([x,y],i)=>{s+=`<g class="kimp${i}"><circle cx="${x}" cy="${y}" r="9" fill="#20272e"/>${[0,60,120].map(a=>{const r=a*Math.PI/180;return `<line x1="${(x-7*Math.cos(r)).toFixed(1)}" y1="${(y-7*Math.sin(r)).toFixed(1)}" x2="${(x+7*Math.cos(r)).toFixed(1)}" y2="${(y+7*Math.sin(r)).toFixed(1)}" stroke="#d3dae0" stroke-width="1.9" stroke-linecap="round"/>`}).join('')}<circle cx="${x}" cy="${y}" r="2.4" fill="#d3dae0"/></g>`});
   // signal va tarmoq impulslari
-  W.forEach(([d,c,dash],i)=>{const eth=c==='#8898a5';s+=`<path class="ks" d="${d}" fill="none" stroke="${eth?'#dfe8f2':c}" stroke-width="5" stroke-linecap="round" opacity=".7" filter="url(#kG)"/><path class="ksc" d="${d}" fill="none" stroke="#fff" stroke-width="${eth?2.2:1.8}" stroke-linecap="round"/>`});
+  W.forEach(([d,c,dash],i)=>{const eth=c==='#8898a5';s+=`<path class="ks" d="${d}" fill="none" stroke="${eth?(LT?'#5f7284':'#dfe8f2'):c}" stroke-width="${LT?4:5}" stroke-linecap="round" opacity="${LT?.38:.7}" filter="url(#kG)"/><path class="ksc" d="${d}" fill="none" stroke="${LT?(eth?'#3f5163':c):'#fff'}" stroke-width="${eth?2.2:(LT?2.4:1.8)}" stroke-linecap="round"/>`});
   // PLC, modul va kommutator chiroqlari
   const L=[];const plcL=(ox,oy)=>{[613,619.25,629.25,635,644.5,650,659.5,664.5,674.5,679.25,688.75,693.75,704.25,708.75,718,723].forEach(x=>{for(let r=0;r<16;r++)L.push([x-508+ox,562+r*3.35-503+oy,r<2||r>13?'#ffd35a':'#7fd4ff','io',1.15])});for(let r=0;r<12;r++)L.push([565-508+ox,561+r*4.6-503+oy,r%4===0?'#ffb020':'#6dff9a','pw',1.15]);for(let r=0;r<14;r++)L.push([735-508+ox,559+r*3.9-503+oy,r%3?'#ff9d3a':'#7fd4ff','io',1.15]);
     L.push([577.5-508+ox,575.5-503+oy,'#3dff7a','run',1.4],[581-508+ox,575.5-503+oy,'#ffd24a','com',1.4],[584.5-508+ox,575.5-503+oy,'#3dff7a','com2',1.4],[588-508+ox,575.5-503+oy,'#ff3b30','err',1.4])};
@@ -376,14 +383,14 @@ T.plc={n:'PLC kontroller',L:2,props:[],
    <rect x="61" y="76" width="18" height="10" rx="1" fill="#15191e"/><rect x="85" y="34" width="10" height="92" fill="#15191e"/>`;
    for(let i=0;i<8;i++){const x=95+i*15.2;s+=`<rect x="${x}" y="34" width="14.2" height="92" rx="1" fill="#1a2026" stroke="#0d1115" stroke-width=".5"/><rect x="${x+1}" y="36" width="12.2" height="6" rx="1" fill="#2a3038"/><rect x="${x+2}" y="115" width="10" height="9" rx="1" fill="#2f6bd8" opacity=".85"/>`}
    s+=`<rect x="217" y="34" width="13" height="92" fill="#1c2127" stroke="#0d1115" stroke-width=".5"/><rect x="230" y="6" width="10" height="120" fill="url(#gMod)"/>
-   <rect x="94" y="8" width="120" height="24" rx="5" fill="#0e2438" stroke="#2e5f86" stroke-width="1"/>${TX(154,26,'PLC',{fs:16,a:'middle',c:'#ffffff'})}`;
+   <rect x="94" y="8" width="120" height="24" rx="5" fill="var(--win)" stroke="#2e5f86" stroke-width="1"/>${TX(154,26,'PLC',{fs:16,a:'middle',c:'#ffffff'})}`;
    const L=[];for(let i=0;i<8;i++)for(const dx of [4,10])for(let r=0;r<16;r++)L.push([95+i*15.2+dx,54+r*3.35,r<2||r>13?'#ffd35a':'#7fd4ff','io']);
    for(let r=0;r<12;r++)L.push([50,53+r*4.6,r%4===0?'#ffb020':'#6dff9a','pw']);for(let r=0;r<14;r++)L.push([223.5,51+r*3.9,r%3?'#ff9d3a':'#7fd4ff','io']);
    L.push([62.5,67.5,'#3dff7a','run',1.4],[66,67.5,'#ffd24a','com',1.4],[69.5,67.5,'#3dff7a','com2',1.4],[73,67.5,'#ff3b30','err',1.4],[62,96,'#3dff7a','run',1.3],[62,99.6,'#ffd24a','com',1.3],[62,103.2,'#3dff7a','com2',1.3]);
    return s+ledsHtml(L)},
   rt(o,g){const cpu=g.querySelector('.cpu'),led=ledRt(g);let acc=0;return {step(dt,t,C,S){led(dt,t,S);acc+=dt;if(acc>.25){acc=0;const tr=S.trip>.5,bl=(t*2.2)%1<.5;cpu.textContent=tr?(bl?'TRIP':'ERR'):'RUN';cpu.setAttribute('fill',tr?'#ff6b5a':'#6dffe0')}}}}};
 T.aomod={n:'Analog chiqish moduli',L:2,props:[],
-  render(){let s=`<g filter="url(#fSh)"><rect width="194" height="112" rx="3" fill="#3b434c" stroke="#1a1f25"/></g><rect x="3" y="3" width="188" height="106" rx="2" fill="#262d34"/><rect x="16" y="6" width="162" height="20" rx="4" fill="#0e2438" stroke="#2e5f86"/>${TX(97,20,'ANALOG CHIQISH MODULI',{fs:10.5,a:'middle',c:'#fff'})}
+  render(){let s=`<g filter="url(#fSh)"><rect width="194" height="112" rx="3" fill="#3b434c" stroke="#1a1f25"/></g><rect x="3" y="3" width="188" height="106" rx="2" fill="#262d34"/><rect x="16" y="6" width="162" height="20" rx="4" fill="var(--win)" stroke="#2e5f86"/>${TX(97,20,'ANALOG CHIQISH MODULI',{fs:10.5,a:'middle',c:'#fff'})}
    <rect x="8" y="30" width="20" height="76" rx="1" fill="#1c2127"/><rect x="30" y="30" width="30" height="76" rx="1" fill="#232a31"/><rect x="33" y="34" width="24" height="10" rx="1" fill="#06222a"/>${Array.from({length:6},(_,i)=>`<rect x="${35+i*3.5}" y="37" width="2.4" height="4" fill="#6dffd8" opacity=".8"/>`).join('')}`;
    for(let i=0;i<14;i++){const x=62+i*8.6;s+=`<rect x="${x}" y="30" width="7.6" height="76" rx="1" fill="#1a2026" stroke="#0d1115" stroke-width=".4"/><rect x="${x+1.5}" y="36" width="4.6" height="44" fill="#11151a"/><rect x="${x+1}" y="96" width="5.6" height="7" rx="1" fill="#2f6bd8" opacity=".8"/>`}
    s+=`<rect x="184" y="40" width="4" height="62" rx="1" fill="#d9a93a"/>`;const L=[];for(let i=0;i<14;i++)L.push([65.8+i*8.6,86,'#ffc24a','ao',1.6]);for(let r=0;r<12;r++)L.push([18,33+r*4,'#6dffd8','io',1]);for(let r=0;r<3;r++)L.push([8,47+r*10,'#3dff7a','run',1.2]);
@@ -610,7 +617,7 @@ function mimic(){
   const np=(T0.NP[k]||0)+(T1?T1.NP[k]||0:0),q=run.QP?run.QP[k]:T0.QIN[k];
   const pTrip=a.per.some(p=>p.trip>=0&&k>=p.trip&&p.type==='LALL');
   const zl=run.load!==undefined?run.load:0;
-  kSprDefs();let s=`<svg viewBox="40 22 1530 1245" role="img" aria-label="Ombor mnemosxemasi" font-family="Segoe UI,Arial,sans-serif" style="--ink:#e9eff6;--pan:#0c1822;--mut:#8ea0b4;--line:#2d4256;--scr:#0e1721;border-radius:8px">`+RDEF+`<rect x="40" y="22" width="1530" height="1245" fill="url(#rBg)"/><rect x="40" y="22" width="1530" height="1245" fill="url(#rGrid)"/>`;
+  kSprDefs();let s=`<svg viewBox="40 22 1530 1245" role="img" aria-label="Ombor mnemosxemasi" font-family="Segoe UI,Arial,sans-serif" style="${isLight()?'--ink:#16232e;--pan:#ffffff;--mut:#5b6b78;--line:#c5d0da;--scr:#eef2f5;--win:#f4f9fd':'--ink:#e9eff6;--pan:#0c1822;--mut:#8ea0b4;--line:#2d4256;--scr:#0e1721;--win:#0e2438'};border-radius:8px">`+rdefT()+`<rect x="40" y="22" width="1530" height="1245" fill="url(#rBg)"/><rect x="40" y="22" width="1530" height="1245" fill="url(#rGrid)"/>`;
   s+=lab(48,42,tg.title,{a:'start',fs:17})+lab(1560,42,tg.disp,{a:'end',fs:17});
   // qayta tiklash (reset)
   s+=lab(1175,62,tg.RSTL,{fs:14})+lab(1175,82,tg.RST,{fs:14})+box(1120,90,110,anyTrip?'TRIP':tg.NORM,anyTrip?'trip':'',22);
@@ -982,7 +989,7 @@ $('xExp').onclick=()=>{
 function tickClock(){const d=new Date();const z=n=>String(n).padStart(2,'0');$('clock').textContent=d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes())+':'+z(d.getSeconds())}
 setInterval(tickClock,1000);tickClock();
 (()=>{let t=null;try{t=localStorage.getItem('qtheme')}catch(e){}if(t===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)t='light';if(t==='light')document.documentElement.dataset.theme='light'})();
-$('theme').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'':'light';try{localStorage.setItem('qtheme',r.dataset.theme==='light'?'light':'dark')}catch(e){}if(cur)render()};
+$('theme').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'':'light';try{localStorage.setItem('qtheme',r.dataset.theme==='light'?'light':'dark')}catch(e){}KA.ok=false;if(cur)render()};
 $('refresh').onclick=()=>$('run').click();
 
 

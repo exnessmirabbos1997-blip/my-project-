@@ -20,6 +20,10 @@ const VIEWS=['overview','mimic','3d','sis','trends','ai','review','journal','bat
   // SIS: kanalsiz ma'lumotda yolg'on qizil chip yo'q
   await p.evaluate(()=>{const r=cur.run;r.tanks.forEach(o=>{o.sisOK=false;o.S1.fill(NaN);o.S2.fill(NaN)});load(r);showView('sis')});await p.waitForTimeout(200);
   ok(await p.evaluate(()=>!document.querySelector('#sisBox .chip.bad')),'SIS: kanalsiz ma‘lumotda yolg‘on chip yo‘q');
+  // yorug' mavzuda mnemosxema oq fonda (qora emas)
+  await p.evaluate(()=>{showView('mimic');document.documentElement.setAttribute('data-theme','light');render()});await p.waitForTimeout(500);
+  ok(await p.evaluate(()=>{const s=document.querySelector('#kBase svg');return !!s&&s.getAttribute('style').includes('--ink:#16232e')&&s.querySelector('#rBg stop').getAttribute('stop-color')==='#ffffff'}),'yorug‘ mavzuda mnemosxema oq fonda');
+  await p.evaluate(()=>{document.documentElement.setAttribute('data-theme','');render();showView('overview')});
   // parol bilan himoyalangan haqiqiy teglar
   const PW='Test-parol-123',PW2='Yangi-parol-456';
   await p.evaluate(async pw=>{window.PLANT_VAULT=await Vault.seal({tk:['TEST-A','TEST-B']},pw)},PW);

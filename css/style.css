@@ -200,3 +200,4 @@ dialog{background:var(--pan);color:var(--ink);border:1px solid var(--line);borde
 .kni{margin-bottom:6px}#kcList li{margin:4px 0}
 
 #rpDlg{width:min(980px,96vw);height:min(92vh,900px);padding:12px;flex-direction:column}#rpDlg[open]{display:flex}.rpH{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+:root[data-theme=light] #mimic{background:#f6f9fb}
