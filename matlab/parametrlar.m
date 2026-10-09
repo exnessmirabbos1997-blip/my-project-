@@ -1,7 +1,7 @@
 function P = parametrlar()
 %PARAMETRLAR  Model parametrlari (maqoladagi 1-jadval).
 %  DCS ekranidan: ishlab chiqarish 174 m3/sutka, bosim 51,9 kPag, harorat 24 C.
-%  P&ID dan: SIS mantiqi 1oo2 (OR), PVSV 54 / -1,6 kPag.
+%  P&ID dan: SIS mantiqi 1oo2 (OR), PVSV 54 / -1,8 kPag.
 %  Qolganlari taxminiy — korxona qiymatlari bilan almashtiring.
 P.V      = 500;     % rezervuar hajmi, m3 (taxminiy)
 P.Qprod  = 174;     % ishlab chiqarish oqimi, m3/sutka (DCS ekrani)
@@ -14,7 +14,7 @@ P.LAHH   = 90;      % SIS LAHH, %
 P.P0     = 51.9;    % normal bosim, kPag
 P.PAL    = 30;      % DCS bosim L alarm, kPag
 P.PALL   = 15;      % DCS bosim LL alarm, kPag
-P.PV     = -1.6;    % PVSV vakuum sozlamasi, kPag (P&ID)
+P.PV     = -1.8;    % PVSV vakuum sozlamasi, kPag (P&ID)
 P.T0     = 24;      % harorat, C
 P.vote   = '1oo2';  % SIS ovoz berish mantiqi: '1oo2' (P&ID) yoki '2oo2'
 P.Th     = 60;      % indeks ufqi, min

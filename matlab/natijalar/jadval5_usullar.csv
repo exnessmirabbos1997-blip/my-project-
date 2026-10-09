@@ -1,5 +1,5 @@
 Usul;Orta_lead_min;Min_variant;Max_variant;Eng_kichik_lead_min;Yetarli_foiz;Otkazib_yuborilgan;Normal_signal_ulushi
-Mavjud alarmlar (DCS);97,980;97,980;97,980;13,500;83,333;10 / 60;0,020
-AI indeksi R;52,175;52,175;52,175;18,000;100,000;0 / 60;0,000
-AI diagnostika;184,613;184,613;184,613;73,000;66,667;20 / 60;0,020
-Birgalikda;133,742;133,742;133,742;20,000;100,000;0 / 60;0,040
+Mavjud alarmlar (DCS);95,608;86,990;102,950;15,800;83,333;50 / 300;0,020
+AI indeksi R;53,260;49,867;57,392;18,200;100,000;0 / 300;0,028
+AI diagnostika;179,825;173,400;185,000;60,800;66,667;100 / 300;0,020
+Birgalikda;131,013;126,675;135,575;20,600;100,000;0 / 300;0,060

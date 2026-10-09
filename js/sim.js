@@ -7,7 +7,7 @@ const KINDS={normal:'Normal ish (quyish o‘z vaqtida to‘xtatiladi)',f1:'Quyis
 const FAULTS=['f1','f2','f3','f4','f5','f7'];
 const CAUSE={none:'Nosozlik belgisi topilmadi',overrun:'Quyish o‘z vaqtida to‘xtatilmagan',leak:'Sizish yoki hisobga olinmagan chiqim',surge:'Kirish oqimining keskin oshishi',freeze:'DCS sath datchigining qotib qolishi',press:'Gaz yostig‘i bosimining yo‘qolishi',nan:'Datchiklar signalining yo‘qolishi (umumiy sabab)',recirc:'Aylanma (minimal oqim) liniyasi noto‘g‘ri rezervuarga yo‘nalgan'};
 const TRUTH={normal:'none',f1:'overrun',f2:'leak',f3:'surge',f4:'freeze',f5:'press',f6:'nan',f7:'recirc'};
-function plantDefaults(){return {V:500,Qprod:174,Qpump:80,Qr:20,LAL:20,LALL:10,LAH:85,LAHH:90,P0:51.9,PAL:30,PALL:15,PV:-1.6,T0:24,vote:'1oo2',Th:60,Tresp:10,w:[.20,.50,.15,.15],RTH:.45,noise:1,sev:0,dt:DT,D3:0.9,DK:5}}
+function plantDefaults(){return {V:500,Qprod:174,Qpump:80,Qr:20,LAL:20,LALL:10,LAH:85,LAHH:90,P0:51.9,PAL:30,PALL:15,PV:-1.8,T0:24,vote:'1oo2',Th:60,Tresp:10,w:[.20,.50,.15,.15],RTH:.45,noise:1,sev:0,dt:DT,D3:0.9,DK:5}}
 function voteLow(a,b,v){if(isNaN(a))return b;if(isNaN(b))return a;return v==='2oo2'?Math.max(a,b):Math.min(a,b)}
 function voteHigh(a,b,v){if(isNaN(a))return b;if(isNaN(b))return a;return v==='2oo2'?Math.min(a,b):Math.max(a,b)}
 function sisVote(a,b,cond,v){const ca=isNaN(a)||cond(a),cb=isNaN(b)||cond(b);return v==='2oo2'?(ca&&cb):(ca||cb)}

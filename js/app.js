@@ -13,7 +13,7 @@ const TAGS={
 // Haqiqiy (korxona) teglari kodda ochiq turmaydi: js/tags-enc.js da AES-GCM bilan shifrlangan, parol kiritilgach xotirada ochiladi (js/vault.js).
 const TG=()=>TAGS[$('tags').value]||TAGS.anon;
 const XN=['Chegaraga yaqinlik (x₁)','Trip’gacha vaqt (x₂)','Anomaliya (x₃)','DCS–SIS tafovuti (x₄)'];
-const SIFL=['LALL (sath past-past, SIS)','LAHH (sath yuqori-yuqori, SIS)','PVSV vakuum (−1,6 kPag)'];
+const SIFL=['LALL (sath past-past, SIS)','LAHH (sath yuqori-yuqori, SIS)','PVSV vakuum (−1,8 kPag)'];
 const SIFK=['LALL','LAHH','PVSV vakuum'];
 const PDEF=plantDefaults();
 let P={...PDEF},simModel=null,model=null,cur=null,prog=0,hover=-1,timer=null,mode='sim',lastBatch=null,working=false,geo=null,lastW=0;
@@ -49,7 +49,7 @@ function readPlant(){const g=(id,def)=>{const v=parseFloat($(id).value);return i
   P.V=Math.max(10,g('pV',PDEF.V));P.Qr=Math.max(0,g('pQr',PDEF.Qr));P.Qprod=Math.max(0,g('pQprod',PDEF.Qprod));P.Qpump=Math.max(1,g('pQpump',PDEF.Qpump));P.P0=g('pP0',PDEF.P0);
   P.LAL=g('pLAL',PDEF.LAL);P.LALL=g('pLALL',PDEF.LALL);P.LAH=g('pLAH',PDEF.LAH);P.LAHH=g('pLAHH',PDEF.LAHH);P.PAL=g('pPAL',PDEF.PAL);P.PALL=g('pPALL',PDEF.PALL);
   P.Th=Math.max(5,g('pTh',PDEF.Th));P.Tresp=Math.max(1,g('pTresp',PDEF.Tresp));P.vote=$('pVote').value;
-  const bad=[];if(!(P.LALL<P.LAL))bad.push('LALL < Low alarm bo‘lishi kerak');if(!(P.LAH<P.LAHH))bad.push('High alarm < LAHH bo‘lishi kerak');if(!(P.PALL<P.PAL))bad.push('PALL alarm < PAL alarm bo‘lishi kerak');if(!(P.PV<P.PALL))bad.push('PALL alarm vakuum chegarasidan (−1,6) yuqori bo‘lishi kerak');if(!(P.LAL<P.LAH))bad.push('Low alarm < High alarm bo‘lishi kerak');return bad}
+  const bad=[];if(!(P.LALL<P.LAL))bad.push('LALL < Low alarm bo‘lishi kerak');if(!(P.LAH<P.LAHH))bad.push('High alarm < LAHH bo‘lishi kerak');if(!(P.PALL<P.PAL))bad.push('PALL alarm < PAL alarm bo‘lishi kerak');if(!(P.PV<P.PALL))bad.push('PALL alarm vakuum chegarasidan (−1,8) yuqori bo‘lishi kerak');if(!(P.LAL<P.LAH))bad.push('Low alarm < High alarm bo‘lishi kerak');return bad}
 // ---------- grafik ----------
 function setup(cv){const r=Math.min(devicePixelRatio||1,3),h=+(cv.dataset.h||(cv.dataset.h=cv.getAttribute('height')));cv.style.height=h+'px';const w=cv.clientWidth;cv.width=Math.round(w*r);cv.height=Math.round(h*r);const g=cv.getContext('2d');g.setTransform(r,0,0,r,0,0);return {g,w,h}}
 function draw(cv,o){
@@ -706,7 +706,7 @@ function render(){
   let pmin=Infinity,pmax=-Infinity;for(const v of o.P)if(isFinite(v)){pmin=Math.min(pmin,v);pmax=Math.max(pmax,v)}
   if(!isFinite(pmin)){pmin=P.PV;pmax=P.P0}
   pmin=Math.floor(Math.min(pmin,P.PV-3)/5)*5;pmax=Math.max(pmax,P.P0+3);pmax=pmin+Math.ceil((pmax-pmin)/20)*20;
-  draw($('c3'),{ys:[{y:o.P,c:css('--ink'),wd:1.5}],min:pmin,max:pmax,dec:0,lines:[{v:P.PAL,c:css('--gray'),t:'PAL'},{v:P.PALL,c:css('--warn'),t:'PALL'},{v:P.PV,c:css('--trip'),t:'PVSV vakuum −1,6',dash:[8,3],r:1}],vl,pts:[]});
+  draw($('c3'),{ys:[{y:o.P,c:css('--ink'),wd:1.5}],min:pmin,max:pmax,dec:0,lines:[{v:P.PAL,c:css('--gray'),t:'PAL'},{v:P.PALL,c:css('--warn'),t:'PALL'},{v:P.PV,c:css('--trip'),t:'PVSV vakuum '+fmt(P.PV,1),dash:[8,3],r:1}],vl,pts:[]});
   const cutR=(R,tr)=>{if(tr<0)return R;const c=Float64Array.from(R);for(let j=tr+1;j<c.length;j++)c[j]=NaN;return c};
   const ys=[{y:cutR(id.R,pa.trip),c:css('--warn'),wd:1.8}];if(nT()>1)ys.push({y:cutR(cur.idxs[1-i].R,a.per[1-i].trip),c:css('--mut'),wd:1,a:.8,dash:[4,3]});
   geo=draw($('c2'),{ys,min:0,max:1,dec:1,lines:[{v:P.RTH,c:css('--warn'),t:'Chegara R = '+fmt(P.RTH,2)}],vl:vl.concat([{k:pa.diag,c:css('--diag'),dash:[4,2],wd:1.5}]),pts:[{k:pa.warn,c:css('--warn')}]});
@@ -726,7 +726,7 @@ function buildEvents(){
     if(v.code==='start'){src='Holat';txt=`${tg.tk[v.recv]} — mahsulot qabul qilmoqda (${tg.XVin[v.recv]} ochiq); ${tg.tk[v.load]} — ${v.loading?'vagon quyishga tayyor':'kutish rejimida'} (${tg.XVout[v.load]} ochiq).`}
     else if(v.code==='pstart'){src='Operator';txt=`${tg.P1}${v.np>1?' va '+tg.P2:''} ishga tushirildi — ${nm} rezervuaridan vagon quyish boshlandi.`}
     else if(v.code==='pstop'){src='Operator';txt=`Quyish to‘xtatildi (DCS sath ${nb(v.v,1)} %).`}
-    else if(v.code==='trip'){if(v.type==='PVAC'){src='Mexanik himoya';txt=`${nm}: bosim −1,6 kPag ga tushdi, ${tg.PVSV[v.tank]} vakuum tomonida ochildi — rezervuarga havo so‘rilmoqda.`}else{src='SIS';const act=v.type==='LAHH'?`${tg.XVin[v.tank]} yopildi`:(v.act.includes('pump')?`${tg.P1}${v.np>1?' va '+tg.P2:''} to‘xtatildi`:'nasos ishlamayotgan edi, qo‘shimcha harakat talab qilinmadi');txt=`${nm}: ${sifTag(v.tank,v.type)} (${P.vote==='1oo2'?'OR, 1oo2':'2oo2'}) ishladi → ${act}.`}}
+    else if(v.code==='trip'){if(v.type==='PVAC'){src='Mexanik himoya';txt=`${nm}: bosim ${fmt(P.PV,1)} kPag ga tushdi, ${tg.PVSV[v.tank]} vakuum tomonida ochildi — rezervuarga havo so‘rilmoqda.`}else{src='SIS';const act=v.type==='LAHH'?`${tg.XVin[v.tank]} yopildi`:(v.act.includes('pump')?`${tg.P1}${v.np>1?' va '+tg.P2:''} to‘xtatildi`:'nasos ishlamayotgan edi, qo‘shimcha harakat talab qilinmadi');txt=`${nm}: ${sifTag(v.tank,v.type)} (${P.vote==='1oo2'?'OR, 1oo2':'2oo2'}) ishladi → ${act}.`}}
     else{src='Haqiqiy sabab*';txt={surge:`Yuqori oqimdan keskin oqim keldi (me’yordan ×${fmt(v.f||0,1)}).`,leak:`${nm}: sizish boshlandi (~${fmt(v.q||0,0)} m³/soat).`,press:`${nm}: gaz yostig‘i ta’minoti (${tg.PCV[v.tank]}) ishdan chiqdi.`,recirc:`${tg.ZI} ichki nosozligi: ko‘rsatkich ${tg.tk[1-v.tank]} ni ko‘rsatmoqda, minimal oqim esa ${nm} ga ketmoqda.`,nan:`${nm}: datchiklar signali yo‘qoldi (umumiy sabab).`,freeze:`${nm}: ${tg.LI[v.tank]} ${nb(v.v,1)} % da qotib qoldi.`,overrun:`${nm}: sath rejadagi to‘xtatish darajasiga (${nb(v.v,1)} %) yetdi, quyish davom etdi.`}[v.code]||v.code}
     E.push({k:v.k,src,txt})}
   run.tanks.forEach((o,i)=>{const id=cur.idxs[i],nm=tg.tk[i];

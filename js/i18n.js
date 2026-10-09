@@ -180,7 +180,7 @@ ru:{
 'Mavjud DCS alarmlari (hodisadan oldin)':'Существующие аварии DCS (до инцидента)',
 'Korxona DCS ekrani geometriyasi asosida. Rezervuardagi suyuqlik sathi DCS o‘lchagichi ko‘rsatkichi bo‘yicha to‘lib-kamayadi; yashil — ochiq klapan yoki ishlayotgan nasos, uch yo‘lli klapanda yashil tomon — minimal oqim yo‘nalishi.':'По геометрии экрана DCS предприятия. Уровень жидкости в резервуаре меняется по показанию датчика DCS; зелёный — открытый клапан или работающий насос, у трёхходового клапана зелёная сторона — направление минимального потока.',
 'Anonim':'Анонимные',
-'Gaz yostig‘i (PCV), PVSV 54 / −1,6 kPag va minimal oqim shaybasi (FO) DCS ekranida ko‘rsatilmaydi, lekin modelda hisobga olingan.':'Газовая подушка (PCV), PVSV 54 / −1,6 кПа(изб.) и шайба минимального потока (FO) не показаны на экране DCS, но учтены в модели.',
+'Gaz yostig‘i (PCV), PVSV 54 / −1,8 kPag va minimal oqim shaybasi (FO) DCS ekranida ko‘rsatilmaydi, lekin modelda hisobga olingan.':'Газовая подушка (PCV), PVSV 54 / −1,8 кПа(изб.) и шайба минимального потока (FO) не показаны на экране DCS, но учтены в модели.',
 'Mnemosxemani to‘liq ko‘rish uchun yonga suring.':'Прокрутите вбок, чтобы увидеть мнемосхему целиком.',
 'Ombor jarayonining uch o‘lchamli ko‘rinishi — mnemosxema bilan bir xil ma’lumotlardan olinadi (sath, bosim, nasoslar, klapanlar, SIS va AI xavf indeksi). Sichqoncha bilan aylantiring, g‘ildirak bilan yaqinlashtiring, uskunani bosib ma’lumot ko‘ring. Pastdagi o‘ynatish tugmasi bilan jarayonni yurgizing.':'Трёхмерный вид процесса склада — данные те же, что и на мнемосхеме (уровень, давление, насосы, клапаны, SIS и индекс риска ИИ). Вращайте мышью, приближайте колесом, нажимайте на оборудование для сведений.',
 'Kirish':'Вход',
@@ -255,7 +255,7 @@ ru:{
 'SIS ovoz berish mantiqi (2 ta sath o‘lchagich)':'Логика голосования SIS (2 датчика уровня)',
 '1oo2 (OR) — P&ID bo‘yicha':'1oo2 (ИЛИ) — по P&ID',
 '2oo2 — ikkalasi kerak':'2oo2 — нужны оба',
-'P&ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,6 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.':'P&ID: LS HH (ИЛИ) — закрывается входной клапан; LS LL (ИЛИ) — останавливаются насосы; сброс — HS. От низкого давления защищает не SIS, а PVSV (54 / −1,6 кПа(изб.)). С экрана DCS: производство 174 м³/сутки, давление 51,9 кПа(изб.). Остальное ориентировочно.'
+'P&ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,8 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.':'P&ID: LS HH (ИЛИ) — закрывается входной клапан; LS LL (ИЛИ) — останавливаются насосы; сброс — HS. От низкого давления защищает не SIS, а PVSV (54 / −1,8 кПа(изб.)). С экрана DCS: производство 174 м³/сутки, давление 51,9 кПа(изб.). Остальное ориентировочно.'
 },
 en:{
 'Hisobotni ko‘rish':'Report preview',
@@ -436,7 +436,7 @@ en:{
 'Mavjud DCS alarmlari (hodisadan oldin)':'Existing DCS alarms (before the incident)',
 'Korxona DCS ekrani geometriyasi asosida. Rezervuardagi suyuqlik sathi DCS o‘lchagichi ko‘rsatkichi bo‘yicha to‘lib-kamayadi; yashil — ochiq klapan yoki ishlayotgan nasos, uch yo‘lli klapanda yashil tomon — minimal oqim yo‘nalishi.':'Based on the plant DCS screen geometry. The liquid level follows the DCS transmitter reading; green means an open valve or a running pump, and on the three-way valve the green side shows the minimum-flow direction.',
 'Anonim':'Anonymous',
-'Gaz yostig‘i (PCV), PVSV 54 / −1,6 kPag va minimal oqim shaybasi (FO) DCS ekranida ko‘rsatilmaydi, lekin modelda hisobga olingan.':'The gas blanket (PCV), PVSV 54 / −1.6 kPag and the minimum-flow orifice (FO) are not shown on the DCS screen but are included in the model.',
+'Gaz yostig‘i (PCV), PVSV 54 / −1,8 kPag va minimal oqim shaybasi (FO) DCS ekranida ko‘rsatilmaydi, lekin modelda hisobga olingan.':'The gas blanket (PCV), PVSV 54 / −1.8 kPag and the minimum-flow orifice (FO) are not shown on the DCS screen but are included in the model.',
 'Mnemosxemani to‘liq ko‘rish uchun yonga suring.':'Swipe sideways to see the whole mimic diagram.',
 'Ombor jarayonining uch o‘lchamli ko‘rinishi — mnemosxema bilan bir xil ma’lumotlardan olinadi (sath, bosim, nasoslar, klapanlar, SIS va AI xavf indeksi). Sichqoncha bilan aylantiring, g‘ildirak bilan yaqinlashtiring, uskunani bosib ma’lumot ko‘ring. Pastdagi o‘ynatish tugmasi bilan jarayonni yurgizing.':'Three-dimensional view of the storage process, driven by the same data as the mimic diagram (level, pressure, pumps, valves, SIS and the AI risk index). Rotate with the mouse, zoom with the wheel, click equipment for details.',
 'Kirish':'Inlet',
@@ -511,7 +511,7 @@ en:{
 'SIS ovoz berish mantiqi (2 ta sath o‘lchagich)':'SIS voting logic (2 level transmitters)',
 '1oo2 (OR) — P&ID bo‘yicha':'1oo2 (OR) — per P&ID',
 '2oo2 — ikkalasi kerak':'2oo2 — both required',
-'P&ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,6 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.':'P&ID: LS HH (OR) closes the inlet valve; LS LL (OR) stops the pumps; reset — HS. Low pressure is protected by the PVSV (54 / −1.6 kPag), not by the SIS. From the DCS screen: production 174 m³/day, pressure 51.9 kPag. The rest is approximate.'
+'P&ID: LS HH (OR) — kirish klapani yopiladi; LS LL (OR) — nasoslar to‘xtaydi; reset — HS. Past bosimdan SIS emas, PVSV (54 / −1,8 kPag) himoya qiladi. DCS ekranidan: ishlab chiqarish 174 m³/sutka, bosim 51,9 kPag. Qolganlari taxminiy.':'P&ID: LS HH (OR) closes the inlet valve; LS LL (OR) stops the pumps; reset — HS. Low pressure is protected by the PVSV (54 / −1.8 kPag), not by the SIS. From the DCS screen: production 174 m³/day, pressure 51.9 kPag. The rest is approximate.'
 }};
 if(typeof module!=='undefined')module.exports=I18N;
 (function(){
